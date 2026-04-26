@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafeteria App</title>
+
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f5f7fb;
+}
+
+.container {
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #5a67ff;
+  color: white;
+  cursor: pointer;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app" class="container"></div>
+
+<div class="nav">
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('cart')">Savat</button>
+  <button onclick="show('admin')">Admin</button>
+</div>
+
+<script>
+
+let user = localStorage.getItem("name");
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+function show(page) {
+  if(page === 'home') renderHome();
+  if(page === 'cart') renderCart();
+  if(page === 'admin') renderAdmin();
+}
+
+if(!user){
+  document.getElementById("app").innerHTML = `
+    <h2>Ismingizni kiriting</h2>
+    <input id="nameInput" placeholder="Ism">
+    <button onclick="saveName()">Davom etish</button>
+  `;
+}else{
+  renderHome();
+}
+
+function saveName(){
+  user = document.getElementById("nameInput").value;
+  localStorage.setItem("name", user);
+  renderHome();
+}
+
+const products = [
+  {name:"Osh", price:25000},
+  {name:"Somsa", price:8000},
+  {name:"Choy", price:3000},
+];
+
+function renderHome(){
+  let html = `<h2>Salom, ${user}</h2>`;
+  products.forEach((p,i)=>{
+    html += `
+    <div class="card">
+      <b>${p.name}</b><br>
+      ${p.price} so'm<br>
+      <button onclick="add(${i})">Qo‘shish</button>
+    </div>`;
+  });
+  document.getElementById("app").innerHTML = html;
+}
+
+function add(i){
+  cart.push(products[i]);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Qo‘shildi");
+}
+
+function renderCart(){
+  let total = 0;
+  let html = "<h2>Savat</h2>";
+
+  cart.forEach(c=>{
+    total += c.price;
+    html += `<div>${c.name} - ${c.price}</div>`;
+  });
+
+  html += `<h3>Jami: ${total}</h3>
+  <button onclick="order(${total})">To‘ladim</button>`;
+
+  document.getElementById("app").innerHTML = html;
+}
+
+function order(total){
+  let id = "#"+(orders.length+1).toString().padStart(3,'0');
+
+  let newOrder = {
+    id,
+    name:user,
+    items:cart,
+    total,
+    status:"pending"
+  };
+
+  orders.push(newOrder);
+  localStorage.setItem("orders", JSON.stringify(orders));
+  cart = [];
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Buyurtma qabul qilindi: "+id);
+  renderHome();
+}
+
+function renderAdmin(){
+  let html = "<h2>Admin Panel</h2>";
+
+  orders.forEach(o=>{
+    html += `
+    <div class="card">
+      <b>${o.id} - ${o.name}</b><br>
+      ${o.total} so'm<br>
+      Status: ${o.status}
+      <br>
+      <button onclick="setStatus('${o.id}','ready')">Tayyor</button>
+    </div>`;
+  });
+
+  document.getElementById("app").innerHTML = html;
+}
+
+function setStatus(id,status){
+  orders = orders.map(o=>{
+    if(o.id===id) o.status = status;
+    return o;
+  });
+  localStorage.setItem("orders", JSON.stringify(orders));
+  renderAdmin();
+}
+
+</script>
+
+</body>
+</html>
