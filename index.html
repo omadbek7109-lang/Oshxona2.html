@@ -12,10 +12,29 @@
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            background: #f8f6f2;
+            background: #f5f3ef;
             padding-bottom: 70px;
         }
-        /* Splash */
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c2c2c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeInUp 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        /* Splash Screen */
         .splash {
             position: fixed;
             top: 0; left: 0;
@@ -27,8 +46,10 @@
             align-items: center;
             z-index: 1000;
             color: white;
+            transition: opacity 0.5s;
         }
-        .splash h1 { font-size: 48px; margin-bottom: 10px; }
+        .splash h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
+        .splash p { font-size: 14px; opacity: 0.9; }
         .spinner {
             width: 50px; height: 50px;
             border: 4px solid rgba(255,255,255,0.3);
@@ -38,16 +59,15 @@
             margin-bottom: 20px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* App */
+        /* App Container */
         .app-container {
             display: none;
             max-width: 500px;
             margin: 0 auto;
-            background: #f8f6f2;
+            background: #f5f3ef;
             min-height: 100vh;
         }
-        /* Bottom nav */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -70,14 +90,17 @@
             font-size: 12px;
             color: #888;
             cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 4px 12px;
+            border-radius: 30px;
         }
-        .nav-item.active { color: #2e7d32; font-weight: 600; }
+        .nav-item:active { transform: scale(0.95); background: #f0f0f0; }
+        .nav-item.active { color: #2e7d32; font-weight: 600; background: #e8f5e9; }
         .nav-icon { font-size: 24px; }
-        
+        /* Pages */
         .page { display: none; padding: 20px 16px 80px 16px; }
         .page.active-page { display: block; }
-        
-        /* Food card */
+        /* Food Card */
         .food-card {
             background: white;
             border-radius: 20px;
@@ -86,8 +109,10 @@
             display: flex;
             gap: 12px;
             align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
+        .food-card:active { transform: scale(0.98); }
         .food-img {
             width: 70px; height: 70px;
             border-radius: 16px;
@@ -101,54 +126,100 @@
             background: #2e7d32;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 30px;
             cursor: pointer;
+            transition: all 0.15s ease;
+            font-weight: 500;
         }
+        .btn-add:active { transform: scale(0.94); opacity: 0.8; }
         .admin-remove {
             background: #e53935;
             color: white;
             border: none;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            margin-left: 6px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
             cursor: pointer;
+            transition: all 0.15s ease;
         }
-        .cart-item {
+        .admin-remove:active { transform: scale(0.94); }
+        /* Cart Card */
+        .cart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; }
+        .cart-item-price { color: #2e7d32; font-size: 14px; }
+        .cart-quantity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .qty-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .qty-btn:active { transform: scale(0.9); background: #ddd; }
+        .cart-delete {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+            margin-left: 8px;
         }
         .total-row {
             display: flex;
             justify-content: space-between;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
             margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 16px;
         }
         .btn-order {
             background: #2e7d32;
             color: white;
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border-radius: 40px;
             border: none;
             font-weight: bold;
+            font-size: 16px;
             margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
+        .btn-order:active { transform: scale(0.97); opacity: 0.9; }
+        /* Order Card */
         .order-card {
             background: white;
             border-radius: 16px;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .status-badge {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
+            font-weight: 600;
         }
         .status-prep { background: #fff3e0; color: #f5a623; }
         .status-ready { background: #c8e6c9; color: #2e7d32; }
@@ -156,25 +227,52 @@
             background: #2e7d32;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            margin-top: 8px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin-top: 10px;
             cursor: pointer;
+            transition: all 0.15s ease;
         }
+        .admin-ready-btn:active { transform: scale(0.96); }
         .admin-badge {
             background: #f5a623;
             color: #2c2c2c;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 30px;
             display: inline-block;
             margin-bottom: 16px;
             font-weight: bold;
         }
+        /* Admin add food form */
+        .add-food-form {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .add-food-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+        }
+        .btn-admin-add {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        /* Login Overlay */
         .login-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 200;
             display: flex;
             align-items: center;
@@ -182,51 +280,70 @@
         }
         .login-card {
             background: white;
-            padding: 24px;
-            border-radius: 28px;
+            padding: 28px;
+            border-radius: 32px;
             width: 85%;
             max-width: 320px;
         }
-        input {
+        .login-card input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 28px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
         }
         .login-btn {
             background: #2e7d32;
             color: white;
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border-radius: 40px;
             border: none;
             font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        /* Profile */
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
         }
         .lang-select {
             display: flex;
             gap: 12px;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         .lang-btn {
-            padding: 8px 20px;
-            border-radius: 30px;
-            background: #e0e0e0;
-            cursor: pointer;
-        }
-        .profile-row {
-            margin: 12px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        button.logout {
-            background: #ccc;
-            border: none;
+            flex: 1;
+            text-align: center;
             padding: 12px;
             border-radius: 40px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .lang-btn:active { transform: scale(0.96); }
+        .lang-btn.active-lang { background: #2e7d32; color: white; }
+        .logout-btn {
+            background: #e53935;
+            color: white;
             width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
             margin-top: 20px;
         }
+        button { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -239,27 +356,22 @@
 
 <div id="app" class="app-container">
     <div id="menuPage" class="page active-page">
-        <h2>🍽️ Menyu</h2>
+        <h2 style="margin-bottom: 16px;">🍽️ Menyu</h2>
         <div id="menuList"></div>
     </div>
     <div id="cartPage" class="page">
-        <h2>🛒 Savat</h2>
+        <h2 style="margin-bottom: 16px;">🛒 Savat</h2>
         <div id="cartList"></div>
         <div id="cartTotal" class="total-row"></div>
-        <button id="checkoutBtn" class="btn-order">Buyurtma berish</button>
+        <button id="checkoutBtn" class="btn-order">✅ Buyurtma berish</button>
     </div>
     <div id="ordersPage" class="page">
-        <h2>📦 Buyurtmalar</h2>
+        <h2 style="margin-bottom: 16px;">📦 Buyurtmalar</h2>
         <div id="ordersList"></div>
     </div>
     <div id="profilePage" class="page">
-        <h2>👤 Profil</h2>
+        <h2 style="margin-bottom: 16px;">👤 Profil</h2>
         <div id="profileContent"></div>
-        <div class="lang-select">
-            <div class="lang-btn" data-lang="uz">🇺🇿 O'zbekcha</div>
-            <div class="lang-btn" data-lang="ru">🇷🇺 Русский</div>
-        </div>
-        <button id="logoutBtn" class="logout">Chiqish</button>
     </div>
 
     <div class="bottom-nav">
@@ -276,6 +388,66 @@
     let foods = [];
     let cart = [];
     let allOrders = [];
+    let currentLang = localStorage.getItem("prandium_lang") || "uz";
+
+    const translations = {
+        uz: {
+            orderReady: "✅ Tayyor",
+            orderPreparing: "Tayyorlanmoqda",
+            addToCart: "Qo‘shish",
+            remove: "O‘chir",
+            emptyCart: "Savat bo'sh",
+            orderPlaced: "Buyurtma qabul qilindi!",
+            bonusEarned: "so‘m bonus",
+            adminPanel: "🔧 Admin panel",
+            markReady: "✅ Tayyor deb belgilash",
+            addNewFood: "➕ Yangi ovqat qo‘shish",
+            foodName: "Ovqat nomi",
+            foodPrice: "Narxi (so‘m)",
+            imageUrl: "Rasm URL",
+            submit: "Qo‘shish",
+            profile: "Profil",
+            name: "Ism",
+            phone: "Telefon",
+            bonus: "Bonus balansi",
+            editName: "Ismni o‘zgartirish",
+            logout: "Chiqish"
+        },
+        ru: {
+            orderReady: "✅ Готово",
+            orderPreparing: "Готовится",
+            addToCart: "Добавить",
+            remove: "Удалить",
+            emptyCart: "Корзина пуста",
+            orderPlaced: "Заказ принят!",
+            bonusEarned: "сум бонус",
+            adminPanel: "🔧 Панель администратора",
+            markReady: "✅ Отметить готовым",
+            addNewFood: "➕ Добавить блюдо",
+            foodName: "Название",
+            foodPrice: "Цена (сум)",
+            imageUrl: "URL фото",
+            submit: "Добавить",
+            profile: "Профиль",
+            name: "Имя",
+            phone: "Телефон",
+            bonus: "Бонусный баланс",
+            editName: "Изменить имя",
+            logout: "Выйти"
+        }
+    };
+    const t = () => translations[currentLang];
+
+    function showToast(msg, isError = false) {
+        let existing = document.querySelector(".toast");
+        if(existing) existing.remove();
+        let toast = document.createElement("div");
+        toast.className = "toast";
+        toast.style.background = isError ? "#e53935" : "#2c2c2c";
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
 
     function loadData() {
         let saved = localStorage.getItem("prandium_user");
@@ -309,9 +481,13 @@
 
     function renderMenu() {
         let container = document.getElementById("menuList");
+        let availableFoods = foods.filter(f => f.available);
+        if(availableFoods.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
+            return;
+        }
         let html = "";
-        foods.forEach(f => {
-            if(!f.available) return;
+        availableFoods.forEach(f => {
             html += `
                 <div class="food-card">
                     <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
@@ -319,11 +495,20 @@
                         <div class="food-name">${f.name}</div>
                         <div class="food-price">${f.price.toLocaleString()} so‘m</div>
                     </div>
-                    <button class="btn-add" data-id="${f.id}">Qo‘shish</button>
-                    ${isAdmin() ? `<button class="admin-remove" data-del="${f.id}">O‘chir</button>` : ""}
+                    <button class="btn-add" data-id="${f.id}">${t().addToCart}</button>
+                    ${isAdmin() ? `<button class="admin-remove" data-del="${f.id}">${t().remove}</button>` : ""}
                 </div>
             `;
         });
+        if(isAdmin()) {
+            html = `<div class="add-food-form">
+                        <h4>${t().addNewFood}</h4>
+                        <input type="text" id="newFoodName" placeholder="${t().foodName}">
+                        <input type="number" id="newFoodPrice" placeholder="${t().foodPrice}">
+                        <input type="text" id="newFoodImage" placeholder="${t().imageUrl} (URL)">
+                        <button id="addFoodBtn" class="btn-admin-add">${t().submit}</button>
+                    </div>` + html;
+        }
         container.innerHTML = html;
         document.querySelectorAll('.btn-add').forEach(btn => {
             btn.onclick = () => addToCart(parseInt(btn.dataset.id));
@@ -333,39 +518,81 @@
                 btn.onclick = () => {
                     let id = parseInt(btn.dataset.del);
                     let idx = foods.findIndex(f => f.id === id);
-                    if(idx !== -1) { foods[idx].available = false; saveAll(); renderMenu(); alert("Ovqat o‘chirildi"); }
+                    if(idx !== -1) { foods[idx].available = false; saveAll(); renderMenu(); showToast("Ovqat o‘chirildi"); }
                 };
+            });
+            document.getElementById("addFoodBtn")?.addEventListener("click", () => {
+                let name = document.getElementById("newFoodName").value.trim();
+                let price = parseInt(document.getElementById("newFoodPrice").value);
+                let image = document.getElementById("newFoodImage").value.trim() || "https://placehold.co/100x100?text=Food";
+                if(!name || isNaN(price)) { showToast("Nomi va narxni kiriting", true); return; }
+                let newId = Date.now();
+                foods.push({ id: newId, name, price, image, available: true });
+                saveAll();
+                renderMenu();
+                showToast(`${name} qo'shildi`);
+                document.getElementById("newFoodName").value = "";
+                document.getElementById("newFoodPrice").value = "";
+                document.getElementById("newFoodImage").value = "";
             });
         }
     }
 
     function addToCart(id) {
-        let food = foods.find(f => f.id === id);
+        let food = foods.find(f => f.id === id && f.available);
         if(!food) return;
         let existing = cart.find(i => i.id === id);
         if(existing) existing.quantity++;
         else cart.push({ id: food.id, name: food.name, price: food.price, quantity: 1 });
         saveAll();
         renderCart();
-        alert(`${food.name} savatga qo'shildi`);
+        showToast(`${food.name} savatga qo'shildi`);
+    }
+
+    function updateCartItem(id, delta) {
+        let item = cart.find(i => i.id === id);
+        if(item) {
+            item.quantity += delta;
+            if(item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+            saveAll();
+            renderCart();
+        }
     }
 
     function renderCart() {
         let container = document.getElementById("cartList");
         let total = 0;
         let html = "";
-        cart.forEach((item, idx) => {
+        cart.forEach(item => {
             let sum = item.price * item.quantity;
             total += sum;
-            html += `<div class="cart-item"><span>${item.name} x${item.quantity}</span><span>${sum.toLocaleString()} so‘m <button onclick="removeCartItem(${idx})">🗑️</button></span></div>`;
+            html += `
+                <div class="cart-card">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${item.price.toLocaleString()} so‘m</div>
+                    </div>
+                    <div class="cart-quantity">
+                        <button class="qty-btn" data-id="${item.id}" data-delta="-1">-</button>
+                        <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                        <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
+                        <button class="cart-delete" data-id="${item.id}">🗑️</button>
+                    </div>
+                </div>
+            `;
         });
-        container.innerHTML = html || "<p>Savat bo'sh</p>";
+        container.innerHTML = html || `<p style="text-align:center; padding:40px;">${t().emptyCart}</p>`;
         document.getElementById("cartTotal").innerHTML = `<span>Jami:</span><span>${total.toLocaleString()} so‘m</span>`;
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.onclick = () => updateCartItem(parseInt(btn.dataset.id), parseInt(btn.dataset.delta));
+        });
+        document.querySelectorAll('.cart-delete').forEach(btn => {
+            btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveAll(); renderCart(); showToast("Olib tashlandi"); };
+        });
     }
-    window.removeCartItem = function(idx) { cart.splice(idx,1); saveAll(); renderCart(); };
 
     function placeOrder() {
-        if(cart.length === 0) return alert("Savat bo'sh");
+        if(cart.length === 0) { showToast(t().emptyCart, true); return; }
         let total = cart.reduce((s,i)=> s + i.price*i.quantity,0);
         let bonusEarn = Math.floor(total * 0.05);
         let newOrder = {
@@ -384,7 +611,7 @@
         saveAll();
         renderCart();
         renderOrders();
-        alert(`Buyurtma qabul qilindi! +${bonusEarn} so‘m bonus`);
+        showToast(`${t().orderPlaced} +${bonusEarn} ${t().bonusEarned}`);
     }
 
     function renderOrders() {
@@ -392,26 +619,26 @@
         let userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
         let html = "";
         if(isAdmin()) {
-            html = `<div class="admin-badge">🔧 Admin - barcha buyurtmalar</div>`;
+            html = `<div class="admin-badge">${t().adminPanel}</div>`;
             allOrders.forEach(order => {
                 let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
                 html += `<div class="order-card">
                     <div><strong>#${order.id}</strong> | ${order.userName} (${order.userPhone})</div>
                     <div>${itemsText}</div>
                     <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status}</span></div>
-                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">✅ Tayyor</button>` : ''}
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
+                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">${t().markReady}</button>` : ''}
                 </div>`;
             });
         } else {
-            if(userOrders.length === 0) html = "<p>Buyurtmalar yo‘q</p>";
+            if(userOrders.length === 0) html = "<p style='text-align:center; padding:40px;'>Buyurtmalar yo‘q</p>";
             userOrders.forEach(order => {
                 let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
                 html += `<div class="order-card">
                     <div><strong>#${order.id}</strong> ${order.date}</div>
                     <div>${itemsText}</div>
                     <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status}</span></div>
+                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
                 </div>`;
             });
         }
@@ -421,7 +648,7 @@
                 btn.onclick = () => {
                     let orderId = parseInt(btn.dataset.id);
                     let order = allOrders.find(o => o.id === orderId);
-                    if(order) { order.status = "Tayyor"; saveAll(); renderOrders(); }
+                    if(order) { order.status = "Tayyor"; saveAll(); renderOrders(); showToast("Buyurtma tayyor!"); }
                 };
             });
         }
@@ -429,17 +656,39 @@
 
     function renderProfile() {
         let bonus = currentUser.bonus || 0;
-        let adminTxt = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi faol</div>' : '';
+        let adminHtml = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi</div>' : '';
         document.getElementById("profileContent").innerHTML = `
-            ${adminTxt}
-            <div class="profile-row"><strong>Ism:</strong> ${currentUser.name}</div>
-            <div class="profile-row"><strong>Telefon:</strong> ${currentUser.phone}</div>
-            <div class="profile-row"><strong>🎁 Bonus:</strong> ${bonus.toLocaleString()} so‘m</div>
-            <button id="editNameBtn" style="margin-top:10px; padding:8px 16px; border-radius:30px; border:none; background:#e0e0e0;">Ismni o‘zgartirish</button>
+            <div class="profile-card">
+                ${adminHtml}
+                <div class="profile-row"><strong>${t().name}:</strong> ${currentUser.name}</div>
+                <div class="profile-row"><strong>${t().phone}:</strong> ${currentUser.phone}</div>
+                <div class="profile-row"><strong>🎁 ${t().bonus}:</strong> ${bonus.toLocaleString()} so‘m</div>
+                <button id="editNameBtn" style="margin-top:16px; padding:10px; border-radius:30px; border:none; background:#e0e0e0; width:100%;">✏️ ${t().editName}</button>
+            </div>
+            <div class="lang-select">
+                <div class="lang-btn ${currentLang === 'uz' ? 'active-lang' : ''}" data-lang="uz">🇺🇿 O'zbekcha</div>
+                <div class="lang-btn ${currentLang === 'ru' ? 'active-lang' : ''}" data-lang="ru">🇷🇺 Русский</div>
+            </div>
+            <button id="logoutProfileBtn" class="logout-btn">🚪 ${t().logout}</button>
         `;
         document.getElementById("editNameBtn")?.addEventListener("click", () => {
-            let newName = prompt("Yangi ism:", currentUser.name);
+            let newName = prompt(t().editName, currentUser.name);
             if(newName) { currentUser.name = newName; saveAll(); renderProfile(); }
+        });
+        document.querySelectorAll(".lang-btn").forEach(btn => {
+            btn.onclick = () => {
+                currentLang = btn.dataset.lang;
+                localStorage.setItem("prandium_lang", currentLang);
+                renderMenu();
+                renderCart();
+                renderOrders();
+                renderProfile();
+                showToast(currentLang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен на русский");
+            };
+        });
+        document.getElementById("logoutProfileBtn")?.addEventListener("click", () => {
+            localStorage.removeItem("prandium_user");
+            location.reload();
         });
     }
 
@@ -463,36 +712,29 @@
             };
         });
         document.getElementById("checkoutBtn").onclick = placeOrder;
-        document.getElementById("logoutBtn").onclick = () => {
-            localStorage.removeItem("prandium_user");
-            location.reload();
-        };
-        document.querySelectorAll(".lang-btn").forEach(btn => {
-            btn.onclick = () => alert(btn.dataset.lang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен на русский");
-        });
     }
 
     function showLogin() {
         let div = document.createElement("div");
         div.className = "login-overlay";
-        div.id = "loginOverlay";
-        div.innerHTML = `<div class="login-card"><h3>Ro‘yxatdan o‘tish</h3><input id="regName" placeholder="Ism"><input id="regPhone" placeholder="+998 xx xxx xx xx"><button id="doReg" class="login-btn">Kirish</button></div>`;
+        div.innerHTML = `<div class="login-card"><h3>Ro‘yxatdan o‘tish</h3><input id="regName" placeholder="Ism" value="Abulloh"><input id="regPhone" placeholder="+998 xx xxx xx xx"><button id="doReg" class="login-btn">Kirish</button></div>`;
         document.body.appendChild(div);
         document.getElementById("doReg").onclick = () => {
             let name = document.getElementById("regName").value.trim();
             let phone = document.getElementById("regPhone").value.trim();
-            if(!name || !phone) return alert("Iltimos ism va telefon kiriting");
+            if(!name || !phone) { showToast("Ism va telefon kiriting", true); return; }
             currentUser = { name, phone, bonus: 0 };
             saveAll();
-            document.getElementById("loginOverlay").remove();
+            div.remove();
             initApp();
         };
     }
 
     setTimeout(() => {
-        document.getElementById("splash").style.opacity = "0";
+        let splash = document.getElementById("splash");
+        splash.style.opacity = "0";
         setTimeout(() => {
-            document.getElementById("splash").style.display = "none";
+            splash.style.display = "none";
             document.getElementById("app").style.display = "block";
             let u = localStorage.getItem("prandium_user");
             if(u) { initApp(); }
