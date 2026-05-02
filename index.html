@@ -2,745 +2,451 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Prandium | Cafeteria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Cafeteria Pre-order | SmartMenu</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
-            background: #f5f3ef;
-            padding-bottom: 70px;
-        }
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2c2c2c;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-size: 14px;
-            z-index: 1000;
-            animation: fadeInUp 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        /* Splash Screen */
-        .splash {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            color: white;
-            transition: opacity 0.5s;
-        }
-        .splash h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
-        .splash p { font-size: 14px; opacity: 0.9; }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        /* App Container */
-        .app-container {
-            display: none;
+            background-color: #0a0a0a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            color: #ededed;
+            padding: 20px 16px 80px;
             max-width: 500px;
             margin: 0 auto;
-            background: #f5f3ef;
-            min-height: 100vh;
         }
-        /* Bottom Navigation */
+        .screen { display: none; animation: fadeIn 0.25s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0; right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 450px;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
             display: flex;
-            justify-content: space-around;
-            padding: 12px 20px;
-            border-top: 1px solid #eee;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            justify-content: space-between;
+            padding: 8px 20px;
+            border: 0.5px solid rgba(76, 175, 80, 0.3);
             z-index: 100;
         }
         .nav-item {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 12px;
+            font-weight: 500;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
-            color: #888;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 4px 12px;
+            padding: 6px 12px;
             border-radius: 30px;
+            cursor: pointer;
         }
-        .nav-item:active { transform: scale(0.95); background: #f0f0f0; }
-        .nav-item.active { color: #2e7d32; font-weight: 600; background: #e8f5e9; }
-        .nav-icon { font-size: 24px; }
-        /* Pages */
-        .page { display: none; padding: 20px 16px 80px 16px; }
-        .page.active-page { display: block; }
-        /* Food Card */
-        .food-card {
-            background: white;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
+        .nav-item.active { color: #4caf50; background: rgba(76, 175, 80, 0.12); }
+        .nav-icon { font-size: 22px; }
+        .card {
+            background: #141414;
+            border-radius: 28px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 0.5px solid #2a2a2a;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
-        .food-card:active { transform: scale(0.98); }
-        .food-img {
-            width: 70px; height: 70px;
-            border-radius: 16px;
-            object-fit: cover;
-            background: #e0e0e0;
-        }
-        .food-info { flex: 1; }
-        .food-name { font-weight: 700; font-size: 16px; }
-        .food-price { color: #2e7d32; font-weight: 600; margin-top: 4px; }
-        .btn-add {
+        .btn-primary {
             background: #2e7d32;
-            color: white;
             border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-weight: 500;
-        }
-        .btn-add:active { transform: scale(0.94); opacity: 0.8; }
-        .admin-remove {
-            background: #e53935;
+            padding: 14px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 16px;
             color: white;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2e7d32;
+            padding: 10px 16px;
+            border-radius: 32px;
+            color: #4caf50;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .lang-btn {
+            background: #1e1e1e;
             border: none;
             padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
+            border-radius: 40px;
+            color: #bbb;
             cursor: pointer;
-            transition: all 0.15s ease;
         }
-        .admin-remove:active { transform: scale(0.94); }
-        /* Cart Card */
-        .cart-card {
-            background: white;
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 10px;
+        .lang-btn.active { background: #2e7d32; color: white; }
+        .food-grid { display: flex; flex-direction: column; gap: 16px; }
+        .food-item {
+            background: #101010;
+            border-radius: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 12px;
+            border: 0.5px solid #2c2c2c;
+        }
+        .food-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            object-fit: cover;
+            background: #1f1f1f;
+        }
+        .food-info { flex: 1; }
+        .food-name { font-weight: 700; font-size: 17px; }
+        .food-price { color: #4caf50; font-weight: 600; margin-top: 4px; }
+        .add-btn {
+            background: #2e7d32;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 30px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+        .category-filter {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+        }
+        .chip {
+            background: #1f1f1f;
+            padding: 8px 18px;
+            border-radius: 40px;
+            white-space: nowrap;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .chip.active { background: #2e7d32; color: white; }
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 20px auto;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+        }
+        .spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2e7d32;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
         }
-        .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: 600; }
-        .cart-item-price { color: #2e7d32; font-size: 14px; }
-        .cart-quantity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .qty-control { display: flex; gap: 12px; align-items: center; }
         .qty-btn {
-            background: #f0f0f0;
+            background: #2a2a2a;
             border: none;
             width: 32px;
             height: 32px;
-            border-radius: 50%;
+            border-radius: 30px;
             font-size: 18px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-        .qty-btn:active { transform: scale(0.9); background: #ddd; }
-        .cart-delete {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #999;
-            margin-left: 8px;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 20px;
-            margin-top: 16px;
-            padding: 16px;
-            background: white;
-            border-radius: 16px;
-        }
-        .btn-order {
-            background: #2e7d32;
             color: white;
-            width: 100%;
-            padding: 16px;
-            border-radius: 40px;
-            border: none;
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 20px;
             cursor: pointer;
-            transition: all 0.15s ease;
         }
-        .btn-order:active { transform: scale(0.97); opacity: 0.9; }
-        /* Order Card */
-        .order-card {
-            background: white;
+        input, select {
+            background: #1e1e1e;
+            border: 1px solid #333;
             border-radius: 16px;
             padding: 14px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-prep { background: #fff3e0; color: #f5a623; }
-        .status-ready { background: #c8e6c9; color: #2e7d32; }
-        .admin-ready-btn {
-            background: #2e7d32;
             color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .admin-ready-btn:active { transform: scale(0.96); }
-        .admin-badge {
-            background: #f5a623;
-            color: #2c2c2c;
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 16px;
-            font-weight: bold;
-        }
-        /* Admin add food form */
-        .add-food-form {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-        .add-food-form input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-        }
-        .btn-admin-add {
-            background: #2e7d32;
-            color: white;
-            width: 100%;
-            padding: 12px;
-            border-radius: 30px;
-            border: none;
-            margin-top: 8px;
-            cursor: pointer;
-        }
-        /* Login Overlay */
-        .login-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            background: white;
-            padding: 28px;
-            border-radius: 32px;
-            width: 85%;
-            max-width: 320px;
-        }
-        .login-card input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 30px;
             font-size: 16px;
-        }
-        .login-btn {
-            background: #2e7d32;
-            color: white;
             width: 100%;
-            padding: 14px;
-            border-radius: 40px;
-            border: none;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
         }
-        /* Profile */
-        .profile-card {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .profile-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .lang-select {
-            display: flex;
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .lang-btn {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 40px;
-            background: #f0f0f0;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-        .lang-btn:active { transform: scale(0.96); }
-        .lang-btn.active-lang { background: #2e7d32; color: white; }
-        .logout-btn {
-            background: #e53935;
-            color: white;
-            width: 100%;
-            padding: 14px;
-            border-radius: 40px;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button { cursor: pointer; }
     </style>
 </head>
 <body>
-
-<div id="splash" class="splash">
-    <div class="spinner"></div>
-    <h1>PRANDIUM</h1>
-    <p>Kokand University of Andijan Branch Cafeteria</p>
-</div>
-
-<div id="app" class="app-container">
-    <div id="menuPage" class="page active-page">
-        <h2 style="margin-bottom: 16px;">🍽️ Menyu</h2>
-        <div id="menuList"></div>
-    </div>
-    <div id="cartPage" class="page">
-        <h2 style="margin-bottom: 16px;">🛒 Savat</h2>
-        <div id="cartList"></div>
-        <div id="cartTotal" class="total-row"></div>
-        <button id="checkoutBtn" class="btn-order">✅ Buyurtma berish</button>
-    </div>
-    <div id="ordersPage" class="page">
-        <h2 style="margin-bottom: 16px;">📦 Buyurtmalar</h2>
-        <div id="ordersList"></div>
-    </div>
-    <div id="profilePage" class="page">
-        <h2 style="margin-bottom: 16px;">👤 Profil</h2>
-        <div id="profileContent"></div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" data-page="menuPage"><span class="nav-icon">🍽️</span><span>Menu</span></div>
-        <div class="nav-item" data-page="cartPage"><span class="nav-icon">🛒</span><span>Savat</span></div>
-        <div class="nav-item" data-page="ordersPage"><span class="nav-icon">📦</span><span>Buyurtmalar</span></div>
-        <div class="nav-item" data-page="profilePage"><span class="nav-icon">👤</span><span>Profil</span></div>
-    </div>
-</div>
-
+<div id="app"></div>
 <script>
-    const ADMIN_PHONE = "+998910005505";
-    let currentUser = null;
-    let foods = [];
-    let cart = [];
-    let allOrders = [];
-    let currentLang = localStorage.getItem("prandium_lang") || "uz";
-
     const translations = {
         uz: {
-            orderReady: "✅ Tayyor",
-            orderPreparing: "Tayyorlanmoqda",
-            addToCart: "Qo‘shish",
-            remove: "O‘chir",
-            emptyCart: "Savat bo'sh",
-            orderPlaced: "Buyurtma qabul qilindi!",
-            bonusEarned: "so‘m bonus",
-            adminPanel: "🔧 Admin panel",
-            markReady: "✅ Tayyor deb belgilash",
-            addNewFood: "➕ Yangi ovqat qo‘shish",
-            foodName: "Ovqat nomi",
-            foodPrice: "Narxi (so‘m)",
-            imageUrl: "Rasm URL",
-            submit: "Qo‘shish",
-            profile: "Profil",
-            name: "Ism",
-            phone: "Telefon",
-            bonus: "Bonus balansi",
-            editName: "Ismni o‘zgartirish",
-            logout: "Chiqish"
+            greeting: "Salom", balance: "Cashback", randomBtn: "🎡 Nima yeyishni bilmayapsiz?",
+            categories: ["Barchasi", "Osh", "Fast food", "Ichimliklar"],
+            orderBtn: "Buyurtma berish", spinAgain: "Yana aylantirish", cartTitle: "Savat",
+            total: "Jami", cashbackInfo: "Cashback (5%)", finalPrice: "Yakuniy",
+            payment: "To‘lovga o‘tish", paymentOptions: "To‘lov usuli", confirmPay: "To‘lovni tasdiqlash",
+            successMsg: "To‘lov muvaffaqiyatli! +5% cashback qo‘shildi",
+            ordersTitle: "Buyurtmalar tarixi", profileTitle: "Profil", nameLabel: "Ism", phoneLabel: "Telefon", cashbackLabel: "Cashback"
         },
         ru: {
-            orderReady: "✅ Готово",
-            orderPreparing: "Готовится",
-            addToCart: "Добавить",
-            remove: "Удалить",
-            emptyCart: "Корзина пуста",
-            orderPlaced: "Заказ принят!",
-            bonusEarned: "сум бонус",
-            adminPanel: "🔧 Панель администратора",
-            markReady: "✅ Отметить готовым",
-            addNewFood: "➕ Добавить блюдо",
-            foodName: "Название",
-            foodPrice: "Цена (сум)",
-            imageUrl: "URL фото",
-            submit: "Добавить",
-            profile: "Профиль",
-            name: "Имя",
-            phone: "Телефон",
-            bonus: "Бонусный баланс",
-            editName: "Изменить имя",
-            logout: "Выйти"
+            greeting: "Здравствуйте", balance: "Кешбэк", randomBtn: "🎡 Не знаете, что поесть?",
+            categories: ["Все", "Плов", "Фастфуд", "Напитки"],
+            orderBtn: "Заказать", spinAgain: "Крутить снова", cartTitle: "Корзина",
+            total: "Итого", cashbackInfo: "Кешбэк (5%)", finalPrice: "Итог",
+            payment: "К оплате", paymentOptions: "Способ оплаты", confirmPay: "Подтвердить",
+            successMsg: "Оплата успешна! +5% кешбэк",
+            ordersTitle: "История заказов", profileTitle: "Профиль", nameLabel: "Имя", phoneLabel: "Телефон", cashbackLabel: "Кешбэк"
         }
     };
-    const t = () => translations[currentLang];
-
-    function showToast(msg, isError = false) {
-        let existing = document.querySelector(".toast");
-        if(existing) existing.remove();
-        let toast = document.createElement("div");
-        toast.className = "toast";
-        toast.style.background = isError ? "#e53935" : "#2c2c2c";
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
+    let lang = "uz";
+    let currentUser = null;
+    let cart = [];
+    let orders = [];
+    let cashbackBalance = 0;
+    const FOODS = [
+        { id: "lagman", name_uz: "Lagman", name_ru: "Лагман", price: 28000, category: "Osh", image: "https://picsum.photos/id/127/100/100", desc_uz: "Mazali lagman", desc_ru: "Вкусный лагман" },
+        { id: "osh", name_uz: "Palov", name_ru: "Плов", price: 32000, category: "Osh", image: "https://picsum.photos/id/128/100/100", desc_uz: "An'anaviy palov", desc_ru: "Традиционный плов" },
+        { id: "burger", name_uz: "Burger", name_ru: "Бургер", price: 25000, category: "Fast food", image: "https://picsum.photos/id/129/100/100", desc_uz: "Double patty", desc_ru: "Двойная котлета" },
+        { id: "pizza", name_uz: "Pizza", name_ru: "Пицца", price: 45000, category: "Fast food", image: "https://picsum.photos/id/130/100/100", desc_uz: "Pepperoni", desc_ru: "Пепперони" },
+        { id: "somsa", name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food", image: "https://picsum.photos/id/131/100/100", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
+        { id: "coca", name_uz: "Coca-Cola", name_ru: "Кока-Кола", price: 7000, category: "Ichimliklar", image: "https://picsum.photos/id/132/100/100", desc_uz: "Sovuq ichimlik", desc_ru: "Холодный напиток" },
+        { id: "ayran", name_uz: "Ayran", name_ru: "Айран", price: 5000, category: "Ichimliklar", image: "https://picsum.photos/id/133/100/100", desc_uz: "Tabiiy", desc_ru: "Натуральный" }
+    ];
+    function t(key) { return translations[lang][key] || key; }
+    function getFoodName(f) { return lang === "uz" ? f.name_uz : f.name_ru; }
+    function validatePhone(phone) {
+        let cleaned = phone.replace(/\s/g, '');
+        let regex = /^\+998[0-9]{9}$/;
+        return regex.test(cleaned);
     }
-
+    function saveData() {
+        if(currentUser) localStorage.setItem("cafe_user", JSON.stringify({ name: currentUser.name, phone: currentUser.phone, cashback: cashbackBalance, orders }));
+        localStorage.setItem("cafe_cart", JSON.stringify(cart));
+        localStorage.setItem("cafe_lang", lang);
+    }
     function loadData() {
-        let saved = localStorage.getItem("prandium_user");
-        if(saved) currentUser = JSON.parse(saved);
-        let savedFoods = localStorage.getItem("prandium_foods");
-        if(savedFoods) foods = JSON.parse(savedFoods);
-        else {
-            foods = [
-                { id: 1, name: "Palov", price: 15000, image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 2, name: "Samsa", price: 7000, image: "https://images.pexels.com/photos/6287765/pexels-photo-6287765.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 3, name: "Choy", price: 3000, image: "https://images.pexels.com/photos/1391379/pexels-photo-1391379.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 4, name: "Lag'mon", price: 18000, image: "https://images.pexels.com/photos/4061523/pexels-photo-4061523.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true },
-                { id: 5, name: "Manti", price: 12000, image: "https://images.pexels.com/photos/6287760/pexels-photo-6287760.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop", available: true }
-            ];
-            localStorage.setItem("prandium_foods", JSON.stringify(foods));
-        }
-        let savedCart = localStorage.getItem(`cart_${currentUser?.phone || "guest"}`);
-        cart = savedCart ? JSON.parse(savedCart) : [];
-        let savedOrders = localStorage.getItem("prandium_orders");
-        allOrders = savedOrders ? JSON.parse(savedOrders) : [];
+        let u = localStorage.getItem("cafe_user");
+        if(u) { let d = JSON.parse(u); currentUser = { name: d.name, phone: d.phone }; cashbackBalance = d.cashback || 0; orders = d.orders || []; }
+        let c = localStorage.getItem("cafe_cart");
+        if(c) cart = JSON.parse(c);
+        let l = localStorage.getItem("cafe_lang");
+        if(l === "ru" || l === "uz") lang = l;
     }
-
-    function saveAll() {
-        if(currentUser) localStorage.setItem("prandium_user", JSON.stringify(currentUser));
-        localStorage.setItem("prandium_foods", JSON.stringify(foods));
-        localStorage.setItem(`cart_${currentUser?.phone || "guest"}`, JSON.stringify(cart));
-        localStorage.setItem("prandium_orders", JSON.stringify(allOrders));
-    }
-
-    function isAdmin() { return currentUser && currentUser.phone === ADMIN_PHONE; }
-
-    function renderMenu() {
-        let container = document.getElementById("menuList");
-        let availableFoods = foods.filter(f => f.available);
-        if(availableFoods.length === 0) {
-            container.innerHTML = "<p style='text-align:center; padding:40px;'>Menyu bo'sh</p>";
-            return;
-        }
-        let html = "";
-        availableFoods.forEach(f => {
-            html += `
-                <div class="food-card">
-                    <img class="food-img" src="${f.image}" onerror="this.src='https://placehold.co/100x100?text=Food'">
-                    <div class="food-info">
-                        <div class="food-name">${f.name}</div>
-                        <div class="food-price">${f.price.toLocaleString()} so‘m</div>
-                    </div>
-                    <button class="btn-add" data-id="${f.id}">${t().addToCart}</button>
-                    ${isAdmin() ? `<button class="admin-remove" data-del="${f.id}">${t().remove}</button>` : ""}
-                </div>
-            `;
-        });
-        if(isAdmin()) {
-            html = `<div class="add-food-form">
-                        <h4>${t().addNewFood}</h4>
-                        <input type="text" id="newFoodName" placeholder="${t().foodName}">
-                        <input type="number" id="newFoodPrice" placeholder="${t().foodPrice}">
-                        <input type="text" id="newFoodImage" placeholder="${t().imageUrl} (URL)">
-                        <button id="addFoodBtn" class="btn-admin-add">${t().submit}</button>
-                    </div>` + html;
-        }
-        container.innerHTML = html;
-        document.querySelectorAll('.btn-add').forEach(btn => {
-            btn.onclick = () => addToCart(parseInt(btn.dataset.id));
-        });
-        if(isAdmin()) {
-            document.querySelectorAll('.admin-remove').forEach(btn => {
-                btn.onclick = () => {
-                    let id = parseInt(btn.dataset.del);
-                    let idx = foods.findIndex(f => f.id === id);
-                    if(idx !== -1) { foods[idx].available = false; saveAll(); renderMenu(); showToast("Ovqat o‘chirildi"); }
-                };
-            });
-            document.getElementById("addFoodBtn")?.addEventListener("click", () => {
-                let name = document.getElementById("newFoodName").value.trim();
-                let price = parseInt(document.getElementById("newFoodPrice").value);
-                let image = document.getElementById("newFoodImage").value.trim() || "https://placehold.co/100x100?text=Food";
-                if(!name || isNaN(price)) { showToast("Nomi va narxni kiriting", true); return; }
-                let newId = Date.now();
-                foods.push({ id: newId, name, price, image, available: true });
-                saveAll();
-                renderMenu();
-                showToast(`${name} qo'shildi`);
-                document.getElementById("newFoodName").value = "";
-                document.getElementById("newFoodPrice").value = "";
-                document.getElementById("newFoodImage").value = "";
-            });
-        }
-    }
-
-    function addToCart(id) {
-        let food = foods.find(f => f.id === id && f.available);
-        if(!food) return;
-        let existing = cart.find(i => i.id === id);
+    function addToCart(food) {
+        let existing = cart.find(i => i.id === food.id);
         if(existing) existing.quantity++;
-        else cart.push({ id: food.id, name: food.name, price: food.price, quantity: 1 });
-        saveAll();
-        renderCart();
-        showToast(`${food.name} savatga qo'shildi`);
+        else cart.push({ ...food, quantity: 1 });
+        saveData();
+        renderCurrentScreen();
     }
-
-    function updateCartItem(id, delta) {
-        let item = cart.find(i => i.id === id);
-        if(item) {
-            item.quantity += delta;
-            if(item.quantity <= 0) cart = cart.filter(i => i.id !== id);
-            saveAll();
-            renderCart();
-        }
+    function getTotalCart() { return cart.reduce((s,i) => s + i.price * i.quantity, 0); }
+    function setScreen(id) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        let scr = document.getElementById(id);
+        if(scr) scr.classList.add('active');
     }
-
-    function renderCart() {
-        let container = document.getElementById("cartList");
-        let total = 0;
-        let html = "";
-        cart.forEach(item => {
-            let sum = item.price * item.quantity;
-            total += sum;
-            html += `
-                <div class="cart-card">
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">${item.price.toLocaleString()} so‘m</div>
-                    </div>
-                    <div class="cart-quantity">
-                        <button class="qty-btn" data-id="${item.id}" data-delta="-1">-</button>
-                        <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-                        <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
-                        <button class="cart-delete" data-id="${item.id}">🗑️</button>
-                    </div>
+    function renderCurrentScreen() {
+        let active = document.querySelector('.screen.active')?.id;
+        if(active === 'homeScreen') renderHome();
+        else if(active === 'cartScreen') renderCart();
+        else if(active === 'spinScreen') renderSpin();
+        else if(active === 'ordersScreen') renderOrders();
+        else if(active === 'profileScreen') renderProfile();
+        else if(active === 'paymentScreen') renderPayment();
+    }
+    function renderHome() {
+        document.getElementById('greetingMsg').innerHTML = `${t('greeting')}, ${currentUser.name}!`;
+        document.getElementById('balanceVal').innerHTML = cashbackBalance;
+        let cats = t('categories');
+        let activeCat = window.currentCat || "Barchasi";
+        let chips = cats.map(c => `<div class="chip ${activeCat===c?'active':''}" data-cat="${c}">${c}</div>`).join('');
+        document.getElementById('categoryChips').innerHTML = chips;
+        let filtered = FOODS;
+        if(activeCat === "Osh") filtered = FOODS.filter(f => f.category === "Osh");
+        else if(activeCat === "Fast food") filtered = FOODS.filter(f => f.category === "Fast food");
+        else if(activeCat === "Ichimliklar") filtered = FOODS.filter(f => f.category === "Ichimliklar");
+        let foodsHtml = filtered.map(f => `
+            <div class="food-item">
+                <img class="food-img" src="${f.image}">
+                <div class="food-info">
+                    <div class="food-name">${getFoodName(f)}</div>
+                    <div class="food-price">${f.price} so'm</div>
                 </div>
-            `;
+                <button class="add-btn" data-id="${f.id}">+</button>
+            </div>
+        `).join('');
+        document.getElementById('foodList').innerHTML = foodsHtml;
+        document.querySelectorAll('.add-btn').forEach(btn => {
+            let food = FOODS.find(f => f.id === btn.dataset.id);
+            btn.onclick = () => { addToCart(food); renderHome(); };
         });
-        container.innerHTML = html || `<p style="text-align:center; padding:40px;">${t().emptyCart}</p>`;
-        document.getElementById("cartTotal").innerHTML = `<span>Jami:</span><span>${total.toLocaleString()} so‘m</span>`;
-        document.querySelectorAll('.qty-btn').forEach(btn => {
-            btn.onclick = () => updateCartItem(parseInt(btn.dataset.id), parseInt(btn.dataset.delta));
+        document.querySelectorAll('.chip').forEach(ch => {
+            ch.onclick = () => { window.currentCat = ch.innerText; renderHome(); };
         });
-        document.querySelectorAll('.cart-delete').forEach(btn => {
-            btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveAll(); renderCart(); showToast("Olib tashlandi"); };
-        });
+        document.getElementById('randomSpinBtnHome').innerHTML = t('randomBtn');
+        document.getElementById('randomSpinBtnHome').onclick = () => { setScreen('spinScreen'); renderSpin(); };
     }
-
-    function placeOrder() {
-        if(cart.length === 0) { showToast(t().emptyCart, true); return; }
-        let total = cart.reduce((s,i)=> s + i.price*i.quantity,0);
-        let bonusEarn = Math.floor(total * 0.05);
-        let newOrder = {
-            id: Date.now(),
-            userId: currentUser.phone,
-            userName: currentUser.name,
-            userPhone: currentUser.phone,
-            items: JSON.parse(JSON.stringify(cart)),
-            total: total,
-            status: "Tayyorlanmoqda",
-            date: new Date().toLocaleString()
-        };
-        allOrders.unshift(newOrder);
-        currentUser.bonus = (currentUser.bonus || 0) + bonusEarn;
-        cart = [];
-        saveAll();
-        renderCart();
-        renderOrders();
-        showToast(`${t().orderPlaced} +${bonusEarn} ${t().bonusEarned}`);
-    }
-
-    function renderOrders() {
-        let container = document.getElementById("ordersList");
-        let userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
-        let html = "";
-        if(isAdmin()) {
-            html = `<div class="admin-badge">${t().adminPanel}</div>`;
-            allOrders.forEach(order => {
-                let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
-                html += `<div class="order-card">
-                    <div><strong>#${order.id}</strong> | ${order.userName} (${order.userPhone})</div>
-                    <div>${itemsText}</div>
-                    <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
-                    ${order.status !== 'Tayyor' ? `<button class="admin-ready-btn" data-id="${order.id}">${t().markReady}</button>` : ''}
-                </div>`;
-            });
-        } else {
-            if(userOrders.length === 0) html = "<p style='text-align:center; padding:40px;'>Buyurtmalar yo‘q</p>";
-            userOrders.forEach(order => {
-                let itemsText = order.items.map(i => `${i.name} x${i.quantity}`).join(", ");
-                html += `<div class="order-card">
-                    <div><strong>#${order.id}</strong> ${order.date}</div>
-                    <div>${itemsText}</div>
-                    <div>Jami: ${order.total.toLocaleString()} so‘m</div>
-                    <div><span class="status-badge ${order.status === 'Tayyor' ? 'status-ready' : 'status-prep'}">${order.status === 'Tayyor' ? t().orderReady : t().orderPreparing}</span></div>
-                </div>`;
-            });
-        }
+    function renderCart() {
+        let container = document.getElementById('cart-list');
+        if(!cart.length) { container.innerHTML = "<div class='card'>Savat bo'sh</div>"; document.getElementById('cart-total').innerText = "0"; document.getElementById('cart-final').innerText = "0"; return; }
+        let html = cart.map((item, idx) => `
+            <div class="cart-item">
+                <div><b>${getFoodName(item)}</b><br/>${item.price} so'm</div>
+                <div class="qty-control">
+                    <button class="qty-btn" data-idx="${idx}" data-delta="-1">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="qty-btn" data-idx="${idx}" data-delta="1">+</button>
+                </div>
+            </div>
+        `).join('');
         container.innerHTML = html;
-        if(isAdmin()) {
-            document.querySelectorAll('.admin-ready-btn').forEach(btn => {
-                btn.onclick = () => {
-                    let orderId = parseInt(btn.dataset.id);
-                    let order = allOrders.find(o => o.id === orderId);
-                    if(order) { order.status = "Tayyor"; saveAll(); renderOrders(); showToast("Buyurtma tayyor!"); }
-                };
-            });
-        }
-    }
-
-    function renderProfile() {
-        let bonus = currentUser.bonus || 0;
-        let adminHtml = isAdmin() ? '<div class="admin-badge">👑 Admin rejimi</div>' : '';
-        document.getElementById("profileContent").innerHTML = `
-            <div class="profile-card">
-                ${adminHtml}
-                <div class="profile-row"><strong>${t().name}:</strong> ${currentUser.name}</div>
-                <div class="profile-row"><strong>${t().phone}:</strong> ${currentUser.phone}</div>
-                <div class="profile-row"><strong>🎁 ${t().bonus}:</strong> ${bonus.toLocaleString()} so‘m</div>
-                <button id="editNameBtn" style="margin-top:16px; padding:10px; border-radius:30px; border:none; background:#e0e0e0; width:100%;">✏️ ${t().editName}</button>
-            </div>
-            <div class="lang-select">
-                <div class="lang-btn ${currentLang === 'uz' ? 'active-lang' : ''}" data-lang="uz">🇺🇿 O'zbekcha</div>
-                <div class="lang-btn ${currentLang === 'ru' ? 'active-lang' : ''}" data-lang="ru">🇷🇺 Русский</div>
-            </div>
-            <button id="logoutProfileBtn" class="logout-btn">🚪 ${t().logout}</button>
-        `;
-        document.getElementById("editNameBtn")?.addEventListener("click", () => {
-            let newName = prompt(t().editName, currentUser.name);
-            if(newName) { currentUser.name = newName; saveAll(); renderProfile(); }
-        });
-        document.querySelectorAll(".lang-btn").forEach(btn => {
+        let total = getTotalCart();
+        document.getElementById('cart-total').innerText = total;
+        document.getElementById('cart-cashback').innerText = Math.floor(total * 0.05);
+        document.getElementById('cart-final').innerText = total;
+        document.querySelectorAll('.qty-btn').forEach(btn => {
             btn.onclick = () => {
-                currentLang = btn.dataset.lang;
-                localStorage.setItem("prandium_lang", currentLang);
-                renderMenu();
-                renderCart();
-                renderOrders();
-                renderProfile();
-                showToast(currentLang === "uz" ? "Til o‘zbekchaga o‘zgartirildi" : "Язык изменен на русский");
+                let idx = parseInt(btn.dataset.idx);
+                let delta = parseInt(btn.dataset.delta);
+                if(cart[idx]) {
+                    cart[idx].quantity += delta;
+                    if(cart[idx].quantity <= 0) cart.splice(idx,1);
+                    saveData();
+                    renderCart();
+                }
             };
         });
-        document.getElementById("logoutProfileBtn")?.addEventListener("click", () => {
-            localStorage.removeItem("prandium_user");
-            location.reload();
-        });
+        document.getElementById('paymentNavBtn').onclick = () => { renderPayment(); setScreen('paymentScreen'); };
     }
-
+    function renderSpin() {
+        let canvas = document.getElementById('wheelCanvas');
+        if(!canvas) return;
+        let ctx = canvas.getContext('2d');
+        let size = 280;
+        canvas.width = size; canvas.height = size;
+        let items = FOODS.slice(0,5);
+        let angle = (Math.PI * 2) / items.length;
+        let start = 0;
+        for(let i=0; i<items.length; i++) {
+            ctx.beginPath();
+            ctx.fillStyle = i%2===0 ? '#1b3b1f' : '#2e7d32';
+            ctx.moveTo(size/2, size/2);
+            ctx.arc(size/2, size/2, size/2, start, start+angle);
+            ctx.fill();
+            ctx.save();
+            ctx.translate(size/2, size/2);
+            ctx.rotate(start + angle/2);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 12px Inter';
+            ctx.fillText(getFoodName(items[i]).slice(0,6), 60, 8);
+            ctx.restore();
+            start += angle;
+        }
+        document.getElementById('spinBtn').disabled = false;
+        document.getElementById('spinBtn').onclick = () => {
+            let randomIdx = Math.floor(Math.random() * items.length);
+            let result = items[randomIdx];
+            document.getElementById('resultImg').src = result.image;
+            document.getElementById('resultName').innerHTML = getFoodName(result);
+            document.getElementById('resultPrice').innerHTML = result.price + " so'm";
+            document.getElementById('resultDesc').innerHTML = lang==='uz' ? result.desc_uz : result.desc_ru;
+            setScreen('resultScreen');
+            document.getElementById('orderFromResult').onclick = () => { addToCart(result); setScreen('homeScreen'); renderHome(); };
+            document.getElementById('spinAgainBtn').onclick = () => { setScreen('spinScreen'); renderSpin(); };
+        };
+    }
+    function renderPayment() {
+        let total = getTotalCart();
+        document.getElementById('payTotalAmount').innerText = total;
+        document.getElementById('confirmPayBtn').onclick = () => {
+            if(cart.length===0) return;
+            let earned = Math.floor(total * 0.05);
+            cashbackBalance += earned;
+            let newOrder = { id: Date.now(), items: [...cart], total: total, date: new Date().toLocaleString(), status: "Qabul qilindi" };
+            orders.unshift(newOrder);
+            cart = [];
+            saveData();
+            document.getElementById('successMsg').innerHTML = t('successMsg');
+            document.getElementById('cashbackAdded').innerHTML = `+${earned} cashback`;
+            setScreen('successScreen');
+        };
+    }
+    function renderOrders() {
+        let container = document.getElementById('ordersList');
+        if(!orders.length) { container.innerHTML = "<div class='card'>Buyurtmalar yo'q</div>"; return; }
+        container.innerHTML = orders.map(o => `<div class='card'><b>#${o.id}</b> - ${o.date}<br/>Jami: ${o.total} so'm<br/>Status: ${o.status}</div>`).join('');
+    }
+    function renderProfile() {
+        document.getElementById('profileName').innerHTML = currentUser.name;
+        document.getElementById('profilePhone').innerHTML = currentUser.phone;
+        document.getElementById('profileCashback').innerHTML = cashbackBalance;
+    }
     function initApp() {
         loadData();
-        renderMenu();
-        renderCart();
-        renderOrders();
-        renderProfile();
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.onclick = () => {
-                let pageId = item.dataset.page;
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-                document.getElementById(pageId).classList.add('active-page');
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-                if(pageId === 'menuPage') renderMenu();
-                if(pageId === 'cartPage') renderCart();
-                if(pageId === 'ordersPage') renderOrders();
-                if(pageId === 'profilePage') renderProfile();
+        if(currentUser) {
+            document.getElementById('authScreen').classList.remove('active');
+            renderHome(); renderCart(); renderOrders(); renderProfile();
+            setScreen('homeScreen');
+        } else {
+            setScreen('authScreen');
+            document.getElementById('authSubmitBtn').onclick = () => {
+                let name = document.getElementById('userName').value.trim();
+                let phone = document.getElementById('userPhone').value.trim();
+                if(!name || !validatePhone(phone)) { alert("Ism va to'g'ri telefon (+998XXXXXXXXX) kiriting!"); return; }
+                currentUser = { name, phone };
+                cashbackBalance = 0; cart = []; orders = [];
+                saveData();
+                initApp();
             };
-        });
-        document.getElementById("checkoutBtn").onclick = placeOrder;
+        }
     }
-
-    function showLogin() {
-        let div = document.createElement("div");
-        div.className = "login-overlay";
-        div.innerHTML = `<div class="login-card"><h3>Ro‘yxatdan o‘tish</h3><input id="regName" placeholder="Ism" value="Abulloh"><input id="regPhone" placeholder="+998 xx xxx xx xx"><button id="doReg" class="login-btn">Kirish</button></div>`;
-        document.body.appendChild(div);
-        document.getElementById("doReg").onclick = () => {
-            let name = document.getElementById("regName").value.trim();
-            let phone = document.getElementById("regPhone").value.trim();
-            if(!name || !phone) { showToast("Ism va telefon kiriting", true); return; }
-            currentUser = { name, phone, bonus: 0 };
-            saveAll();
-            div.remove();
-            initApp();
-        };
-    }
-
-    setTimeout(() => {
-        let splash = document.getElementById("splash");
-        splash.style.opacity = "0";
-        setTimeout(() => {
-            splash.style.display = "none";
-            document.getElementById("app").style.display = "block";
-            let u = localStorage.getItem("prandium_user");
-            if(u) { initApp(); }
-            else { showLogin(); }
-        }, 500);
-    }, 3000);
+    document.getElementById('app').innerHTML = `
+        <div class="lang-switch"><button class="lang-btn ${lang==='uz'?'active':''}" data-lang="uz">UZ</button><button class="lang-btn ${lang==='ru'?'active':''}" data-lang="ru">RU</button></div>
+        <div id="authScreen" class="screen"><div class="card"><h2>🍽️ SmartMenu</h2><input type="text" id="userName" placeholder="Ismingiz"><input type="tel" id="userPhone" placeholder="+998915003434" style="margin-top:12px"><button id="authSubmitBtn" class="btn-primary" style="margin-top:20px">Kirish</button></div></div>
+        <div id="homeScreen" class="screen"><div class="card"><div id="greetingMsg"></div><div>💰 <span id="balanceVal"></span> so'm</div><button id="randomSpinBtnHome" class="btn-outline" style="margin-top:12px"></button></div><div id="categoryChips" class="category-filter"></div><div id="foodList" class="food-grid"></div></div>
+        <div id="cartScreen" class="screen"><h2>🛒 ${t('cartTitle')}</h2><div id="cart-list"></div><div class="card">${t('total')}: <span id="cart-total">0</span> so'm<br/>${t('cashbackInfo')}: <span id="cart-cashback">0</span><br/><strong>${t('finalPrice')}: <span id="cart-final">0</span> so'm</strong><br/><button id="paymentNavBtn" class="btn-primary" style="margin-top:14px">${t('payment')}</button></div></div>
+        <div id="spinScreen" class="screen"><h2>🎡 Roulette</h2><div class="wheel-container"><canvas id="wheelCanvas" width="280" height="280"></canvas><button id="spinBtn" class="spin-btn">Ayla</button></div></div>
+        <div id="resultScreen" class="screen"><div class="card"><img id="resultImg" width="120" style="border-radius:32px"><h2 id="resultName"></h2><h3 id="resultPrice"></h3><p id="resultDesc"></p><button id="orderFromResult" class="btn-primary">${t('orderBtn')}</button><button id="spinAgainBtn" class="btn-outline" style="margin-top:12px">${t('spinAgain')}</button></div></div>
+        <div id="paymentScreen" class="screen"><h2>💳 ${t('paymentOptions')}</h2><div class="card"><p>Click | Payme | Uzcard | Naqd</p><div>Jami: <span id="payTotalAmount"></span> so'm</div><button id="confirmPayBtn" class="btn-primary">${t('confirmPay')}</button></div></div>
+        <div id="successScreen" class="screen"><div class="card"><h2>✅ ${t('successMsg')}</h2><p id="cashbackAdded"></p><button onclick="location.reload()" class="btn-primary">Yangi buyurtma</button></div></div>
+        <div id="ordersScreen" class="screen"><h2>📋 ${t('ordersTitle')}</h2><div id="ordersList"></div></div>
+        <div id="profileScreen" class="screen"><div class="card"><h3>👤 ${t('profileTitle')}</h3><p>${t('nameLabel')}: <span id="profileName"></span></p><p>${t('phoneLabel')}: <span id="profilePhone"></span></p><p>💰 ${t('cashbackLabel')}: <span id="profileCashback"></span> so'm</p></div></div>
+        <div class="bottom-nav"><button class="nav-item" id="homeNav">🏠 Bosh</button><button class="nav-item" id="cartNav">🛒 Savat</button><button class="nav-item" id="spinNav">🎡 Aylantir</button><button class="nav-item" id="ordersNav">📋 Buyurtma</button><button class="nav-item" id="profileNav">👤 Profil</button></div>
+    `;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.onclick = () => { lang = btn.dataset.lang; localStorage.setItem('cafe_lang', lang); initApp(); };
+    });
+    document.getElementById('homeNav').onclick = () => { renderHome(); setScreen('homeScreen'); };
+    document.getElementById('cartNav').onclick = () => { renderCart(); setScreen('cartScreen'); };
+    document.getElementById('spinNav').onclick = () => { renderSpin(); setScreen('spinScreen'); };
+    document.getElementById('ordersNav').onclick = () => { renderOrders(); setScreen('ordersScreen'); };
+    document.getElementById('profileNav').onclick = () => { renderProfile(); setScreen('profileScreen'); };
+    initApp();
 </script>
 </body>
 </html>
