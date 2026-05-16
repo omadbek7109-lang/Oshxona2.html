@@ -1,110 +1,462 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#ffffff">
-  <title>Nima yeymiz? – Premium Food Delivery</title>
+  <meta name="theme-color" content="#10b981">
+  <meta name="description" content="Nima yeymiz? - Premium food delivery service in Uzbekistan">
+  <title>Nima yeymiz? | Premium Food Delivery</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash" class="splash active">
-    <div class="splash-glow"></div>
-    <div class="floating-circle c1"></div>
-    <div class="floating-circle c2"></div>
-    <div class="floating-circle c3"></div>
-    <div class="splash-content">
-      <div class="logo-badge">🍜</div>
-      <h1 class="splash-title">Nima yeymiz?</h1>
-      <p class="splash-sub">Bugun nima yeymiz?</p>
+<!-- SPLASH SCREEN -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-background"></div>
+  <div class="splash-glow-1"></div>
+  <div class="splash-glow-2"></div>
+  <div class="splash-glow-3"></div>
+  <div class="floating-circle f-circle-1"></div>
+  <div class="floating-circle f-circle-2"></div>
+  <div class="floating-circle f-circle-3"></div>
+  <div class="floating-circle f-circle-4"></div>
+  <div class="splash-container">
+    <div class="splash-logo-wrapper">
+      <div class="splash-logo-glow"></div>
+      <div class="splash-logo">🍜</div>
+    </div>
+    <h1 class="splash-title">Nima yeymiz?</h1>
+    <p class="splash-subtitle">Bugun nima yeymiz?</p>
+    <div class="splash-progress">
+      <div class="splash-progress-bar"></div>
     </div>
   </div>
+</div>
 
-  <!-- AUTH SCREEN -->
-  <div id="authScreen" class="auth-screen">
-    <div class="auth-glass">
+<!-- AUTH SCREEN -->
+<div id="authScreen" class="auth-screen" style="display: none;">
+  <div class="auth-backdrop"></div>
+  <div class="auth-card">
+    <div class="auth-header">
       <div class="auth-icon">🍽️</div>
-      <h2>Salom!</h2>
+      <h2>Xush kelibsiz!</h2>
       <p>Davom etish uchun ma'lumotlaringizni kiriting</p>
-      <div class="input-group">
-        <input type="text" id="fullName" placeholder="Ism va familiya" autocomplete="off">
-        <label>To'liq ism</label>
+    </div>
+    <div class="auth-form">
+      <div class="input-field">
+        <input type="text" id="fullNameInput" class="input-premium" autocomplete="off">
+        <label class="floating-label">To'liq ism</label>
+        <i class="fas fa-user input-icon"></i>
       </div>
-      <div class="input-group">
-        <input type="tel" id="phoneNumber" placeholder="+998 90 123 45 67">
-        <label>Telefon raqam</label>
+      <div class="input-field">
+        <input type="tel" id="phoneInput" class="input-premium" autocomplete="off">
+        <label class="floating-label">Telefon raqam</label>
+        <i class="fas fa-phone input-icon"></i>
       </div>
-      <button id="authContinueBtn" class="premium-btn">Davom etish</button>
+      <button id="authSubmitBtn" class="btn-premium btn-large">Davom etish <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <p class="auth-terms">Davom etish orqali siz foydalanish shartlariga rozilik bildirasiz</p>
+  </div>
+</div>
+
+<!-- MAIN APP CONTAINER -->
+<div id="mainApp" style="display: none;">
+  
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item" data-page="home">
+      <i class="fas fa-home"></i>
+      <span data-key="nav_home">Bosh sahifa</span>
+    </div>
+    <div class="nav-item" data-page="menu">
+      <i class="fas fa-utensils"></i>
+      <span data-key="nav_menu">Menyu</span>
+    </div>
+    <div class="nav-item" data-page="roulette">
+      <i class="fas fa-dice-d6"></i>
+      <span data-key="nav_roulette">Roulette</span>
+    </div>
+    <div class="nav-item" data-page="rewards">
+      <i class="fas fa-gem"></i>
+      <span data-key="nav_rewards">Sovg'alar</span>
+    </div>
+    <div class="nav-item" data-page="cart">
+      <i class="fas fa-shopping-bag"></i>
+      <span data-key="nav_cart">Savat</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </div>
+    <div class="nav-item" data-page="profile">
+      <i class="fas fa-user"></i>
+      <span data-key="nav_profile">Profil</span>
     </div>
   </div>
 
-  <!-- MAIN APP CONTAINER -->
-  <div id="appContainer" style="display: none;">
-    <!-- BOTTOM NAVIGATION (floating glass) -->
-    <div class="bottom-nav" id="bottomNav">
-      <div class="nav-item" data-tab="home"><i class="fas fa-home"></i><span>Home</span></div>
-      <div class="nav-item" data-tab="menu"><i class="fas fa-utensils"></i><span>Menu</span></div>
-      <div class="nav-item" data-tab="roulette"><i class="fas fa-dice"></i><span>Roulette</span></div>
-      <div class="nav-item" data-tab="rewards"><i class="fas fa-gem"></i><span>Rewards</span></div>
-      <div class="nav-item" data-tab="cart"><i class="fas fa-shopping-bag"></i><span>Cart</span></div>
-      <div class="nav-item" data-tab="profile"><i class="fas fa-user"></i><span>Profile</span></div>
-    </div>
-
-    <!-- MAIN CONTENT PAGES -->
-    <div id="pageHome" class="page active-page">
-      <!-- Home content will be injected -->
-    </div>
-    <div id="pageMenu" class="page"></div>
-    <div id="pageRoulette" class="page"></div>
-    <div id="pageRewards" class="page"></div>
-    <div id="pageCart" class="page"></div>
-    <div id="pageProfile" class="page"></div>
-    <div id="pageOrders" class="page" style="display:none;"></div> <!-- hidden orders page, accessible from profile -->
-  </div>
-
-  <!-- MODAL for food details (bottom sheet) -->
-  <div id="foodModal" class="modal-bottom">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <img id="modalImg" src="" alt="">
-      <h3 id="modalTitle"></h3>
-      <p id="modalDesc"></p>
-      <p id="modalIngredients"></p>
-      <div class="quantity-selector">
-        <button id="decQty">-</button>
-        <span id="modalQty">1</span>
-        <button id="incQty">+</button>
+  <!-- PAGES -->
+  <div id="homePage" class="page active-page">
+    <div class="home-content">
+      <div class="home-header">
+        <div class="greeting-section">
+          <div class="greeting-text">
+            <span class="greeting-wave">👋</span>
+            <h2><span data-key="hello">Salom</span>, <span id="userNameDisplay">...</span></h2>
+            <p class="today-date" id="todayDate"></p>
+          </div>
+          <div class="header-actions">
+            <div class="location-selector" id="locationSelector">
+              <i class="fas fa-map-marker-alt"></i>
+              <span id="locationText">Toshkent sh.</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="profile-shortcut" id="profileShortcut">
+              <i class="fas fa-user-circle"></i>
+            </div>
+          </div>
+        </div>
+        <div class="balance-cards">
+          <div class="balance-card cashback-card">
+            <i class="fas fa-wallet"></i>
+            <div class="balance-info">
+              <span data-key="cashback">Cashback</span>
+              <strong><span id="cashbackBalance">0</span> so'm</strong>
+            </div>
+          </div>
+          <div class="balance-card diamond-card">
+            <i class="fas fa-gem"></i>
+            <div class="balance-info">
+              <span data-key="diamonds">Olmos</span>
+              <strong><span id="diamondBalance">0</span> 💎</strong>
+            </div>
+          </div>
+        </div>
+        <div class="search-container">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Qidirish..." data-key-placeholder="search_placeholder">
+          </div>
+        </div>
       </div>
-      <div id="modalPrice"></div>
-      <button id="addToCartModalBtn" class="premium-btn">Qo'shish</button>
+      
+      <div class="categories-section">
+        <div class="section-header">
+          <h3 data-key="categories">Kategoriyalar</h3>
+          <span class="view-all" data-key="view_all">Hammasi</span>
+        </div>
+        <div class="categories-slider" id="categoriesSlider"></div>
+      </div>
+
+      <div class="promo-section">
+        <div class="promo-slider" id="promoSlider"></div>
+        <div class="promo-dots" id="promoDots"></div>
+      </div>
+
+      <div class="featured-section">
+        <div class="section-header">
+          <h3 data-key="recommended">Tavsiya qilamiz</h3>
+          <span class="view-all" data-key="view_all">Hammasi</span>
+        </div>
+        <div class="food-grid" id="foodGrid"></div>
+      </div>
     </div>
   </div>
 
-  <!-- CART SIDESHEET -->
-  <div id="cartSheet" class="cart-sidebar">
-    <div class="cart-header"><h3>Savat <i class="fas fa-times close-cart"></i></h3></div>
-    <div id="cartItemsList"></div>
-    <div class="cart-footer">
-      <div>Jami: <span id="cartTotal">0</span> so'm</div>
-      <div>Cashback: <span id="cartCashback">0</span></div>
-      <div>Olmos: <span id="cartDiamonds">0</span></div>
-      <button id="checkoutBtn" class="premium-btn">Buyurtma berish</button>
+  <div id="menuPage" class="page">
+    <div class="menu-header">
+      <h2 data-key="full_menu">To'liq menyu</h2>
+      <div class="menu-filters" id="menuFilters"></div>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+
+  <div id="roulettePage" class="page">
+    <div class="roulette-container">
+      <div class="roulette-header">
+        <h2 data-key="food_roulette">Taomlar ruletkasi</h2>
+        <p data-key="roulette_desc">Omadingizni sinab ko'ring va sovg'alar yutib oling!</p>
+      </div>
+      <div class="wheel-wrapper">
+        <div class="wheel-container">
+          <canvas id="rouletteCanvas" width="500" height="500"></canvas>
+          <div class="wheel-pointer"></div>
+          <button id="spinWheelBtn" class="spin-button">
+            <i class="fas fa-play"></i>
+            <span data-key="spin">AYLANTIR</span>
+          </button>
+        </div>
+      </div>
+      <div id="rouletteResult" class="roulette-result"></div>
+      <div class="roulette-info">
+        <div class="roulette-stats">
+          <div class="stat-item">
+            <i class="fas fa-trophy"></i>
+            <span data-key="today_spins">Bugungi aylantirishlar</span>
+            <strong id="spinCount">0</strong>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-gift"></i>
+            <span data-key="won_prizes">Yutuqlar</span>
+            <strong id="prizeCount">0</strong>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ORDER DETAIL MODAL -->
-  <div id="orderDetailModal" class="modal-bottom">
-    <div class="modal-content">
-      <span class="close-order-modal">&times;</span>
-      <h3>Buyurtma tafsilotlari</h3>
-      <div id="orderDetailContent"></div>
+  <div id="rewardsPage" class="page">
+    <div class="rewards-container">
+      <div class="rewards-header">
+        <h2 data-key="rewards_center">Sovg'alar markazi</h2>
+        <div class="user-level-card">
+          <div class="level-icon" id="levelIcon">🥉</div>
+          <div class="level-info">
+            <span data-key="your_level">Sizning darajangiz</span>
+            <strong id="userLevel">Bronze</strong>
+            <div class="level-progress">
+              <div class="level-progress-bar" id="levelProgress"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fas fa-money-bill-wave"></i>
+          <div class="stat-details">
+            <span data-key="total_cashback">Jami cashback</span>
+            <strong><span id="totalCashback">0</span> so'm</strong>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-gem"></i>
+          <div class="stat-details">
+            <span data-key="total_diamonds">Jami olmos</span>
+            <strong><span id="totalDiamonds">0</span> 💎</strong>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-shopping-cart"></i>
+          <div class="stat-details">
+            <span data-key="total_orders">Jami buyurtmalar</span>
+            <strong><span id="totalOrdersCount">0</span></strong>
+          </div>
+        </div>
+      </div>
+      <div class="leaderboard-section">
+        <h3><i class="fas fa-chart-line"></i> <span data-key="leaderboard">Liderlar jadvali</span></h3>
+        <div class="leaderboard-list" id="leaderboardList"></div>
+      </div>
+      <div class="rewards-shop">
+        <h3><i class="fas fa-store"></i> <span data-key="rewards_shop">Sovg'alar do'koni</span></h3>
+        <div class="rewards-grid" id="rewardsGrid"></div>
+      </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <div id="cartPage" class="page">
+    <div class="cart-container">
+      <div class="cart-header">
+        <h2 data-key="my_cart">Mening savatim</h2>
+        <button id="clearCartBtn" class="btn-text"><i class="fas fa-trash-alt"></i> <span data-key="clear_cart">Tozalash</span></button>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span data-key="subtotal">Umumiy</span>
+          <span id="cartSubtotal">0 so'm</span>
+        </div>
+        <div class="summary-row highlight">
+          <span><i class="fas fa-percent"></i> <span data-key="cashback_earn">Cashback</span></span>
+          <span id="cartCashbackEarn">0 so'm</span>
+        </div>
+        <div class="summary-row highlight">
+          <span><i class="fas fa-gem"></i> <span data-key="diamonds_earn">Olmos</span></span>
+          <span id="cartDiamondsEarn">0 💎</span>
+        </div>
+        <div class="summary-row total">
+          <span data-key="total_pay">To'lov summasi</span>
+          <span id="cartTotal">0 so'm</span>
+        </div>
+        <button id="checkoutBtn" class="btn-premium btn-checkout">
+          <i class="fas fa-shopping-cart"></i> <span data-key="place_order">Buyurtma berish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="profilePage" class="page">
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3 id="profileName">...</h3>
+        <p id="profilePhone">...</p>
+        <button id="editProfileBtn" class="btn-outline"><i class="fas fa-edit"></i> <span data-key="edit_profile">Tahrirlash</span></button>
+      </div>
+      <div class="profile-stats">
+        <div class="stat-row">
+          <div class="stat-item">
+            <i class="fas fa-wallet"></i>
+            <div>
+              <small data-key="cashback_balance">Cashback balans</small>
+              <strong><span id="profileCashback">0</span> so'm</strong>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-gem"></i>
+            <div>
+              <small data-key="diamonds_balance">Olmos balans</small>
+              <strong><span id="profileDiamonds">0</span> 💎</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-menu">
+        <div class="menu-item" id="myOrdersBtn">
+          <i class="fas fa-history"></i>
+          <span data-key="my_orders">Mening buyurtmalarim</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="menu-item" id="darkModeToggle">
+          <i class="fas fa-moon"></i>
+          <span data-key="dark_mode">Qorong'u rejim</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="darkModeCheckbox">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+        <div class="menu-item" id="languageToggle">
+          <i class="fas fa-language"></i>
+          <span data-key="language">Til</span>
+          <div class="language-buttons">
+            <button class="lang-btn active" data-lang="uz">O'zbek</button>
+            <button class="lang-btn" data-lang="ru">Русский</button>
+          </div>
+        </div>
+        <div class="menu-item support-card">
+          <i class="fab fa-telegram"></i>
+          <div>
+            <span data-key="telegram_support">Telegram orqali yordam</span>
+            <small>@NimaYeymiz_sup</small>
+          </div>
+          <a href="https://t.me/NimaYeymiz_sup" target="_blank" class="support-link">
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+        </div>
+        <div class="menu-item" id="adminPanelBtn" style="display: none;">
+          <i class="fas fa-user-shield"></i>
+          <span>Admin panel</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="menu-item logout-item" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span data-key="logout">Chiqish</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ordersPage" class="page">
+    <div class="orders-container">
+      <div class="orders-header">
+        <button id="backToProfileBtn" class="btn-back"><i class="fas fa-arrow-left"></i></button>
+        <h2 data-key="my_orders">Mening buyurtmalarim</h2>
+      </div>
+      <div id="ordersList" class="orders-list"></div>
+    </div>
+  </div>
+
+  <div id="adminPage" class="page">
+    <div class="admin-container">
+      <div class="admin-header">
+        <button id="backToProfileFromAdmin" class="btn-back"><i class="fas fa-arrow-left"></i></button>
+        <h2>Admin Panel</h2>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-admin-tab="foods">Taomlar</button>
+        <button class="admin-tab" data-admin-tab="add">Qo'shish</button>
+      </div>
+      <div id="adminFoodsList" class="admin-foods-list"></div>
+      <div id="adminAddForm" class="admin-add-form" style="display: none;">
+        <div class="form-group">
+          <input type="text" id="adminFoodName" placeholder="Taom nomi">
+        </div>
+        <div class="form-group">
+          <input type="number" id="adminFoodPrice" placeholder="Narxi (so'm)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="adminFoodImage" placeholder="Rasm URL">
+        </div>
+        <div class="form-group">
+          <input type="text" id="adminFoodCategory" placeholder="Kategoriya">
+        </div>
+        <div class="form-group">
+          <textarea id="adminFoodDesc" placeholder="Ta'rif"></textarea>
+        </div>
+        <div class="form-group">
+          <textarea id="adminFoodIngredients" placeholder="Ingredientlar"></textarea>
+        </div>
+        <div class="form-group">
+          <input type="number" id="adminFoodCashback" placeholder="Cashback" value="2000">
+        </div>
+        <div class="form-group">
+          <input type="number" id="adminFoodDiamonds" placeholder="Olmos" value="2">
+        </div>
+        <button id="adminSaveFoodBtn" class="btn-premium">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOD DETAIL MODAL -->
+<div id="foodDetailModal" class="modal-bottom-sheet">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button class="modal-close"><i class="fas fa-times"></i></button>
+    <img id="modalFoodImage" class="modal-food-image" src="" alt="">
+    <div class="modal-body">
+      <h3 id="modalFoodTitle"></h3>
+      <div class="modal-rating">
+        <i class="fas fa-star"></i>
+        <span id="modalFoodRating">4.5</span>
+      </div>
+      <div class="modal-price-section">
+        <div class="modal-price" id="modalFoodPrice"></div>
+        <div class="modal-rewards">
+          <span><i class="fas fa-percent"></i> <span id="modalCashback">0</span> so'm</span>
+          <span><i class="fas fa-gem"></i> <span id="modalDiamonds">0</span></span>
+        </div>
+      </div>
+      <div class="modal-desc">
+        <p id="modalFoodDesc"></p>
+      </div>
+      <div class="modal-ingredients">
+        <strong>Ingredientlar:</strong>
+        <p id="modalFoodIngredients"></p>
+      </div>
+      <div class="modal-quantity">
+        <button id="modalDecQty"><i class="fas fa-minus"></i></button>
+        <span id="modalQtyValue">1</span>
+        <button id="modalIncQty"><i class="fas fa-plus"></i></button>
+      </div>
+      <button id="modalAddToCart" class="btn-premium">Savatga qo'shish <i class="fas fa-shopping-bag"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div id="orderDetailModal" class="modal-bottom-sheet">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="modal-handle"></div>
+    <button class="modal-close" id="closeOrderModal"><i class="fas fa-times"></i></button>
+    <div class="modal-body" id="orderDetailContent"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
-</html> 
+</html>
