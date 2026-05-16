@@ -2,451 +2,59 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Cafeteria Pre-order | SmartMenu</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: #0a0a0a;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            color: #ededed;
-            padding: 20px 16px 80px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .screen { display: none; animation: fadeIn 0.25s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
-        .bottom-nav {
-            position: fixed;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 450px;
-            background: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 40px;
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 20px;
-            border: 0.5px solid rgba(76, 175, 80, 0.3);
-            z-index: 100;
-        }
-        .nav-item {
-            background: transparent;
-            border: none;
-            color: #aaa;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-        .nav-item.active { color: #4caf50; background: rgba(76, 175, 80, 0.12); }
-        .nav-icon { font-size: 22px; }
-        .card {
-            background: #141414;
-            border-radius: 28px;
-            padding: 18px;
-            margin-bottom: 20px;
-            border: 0.5px solid #2a2a2a;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-        .btn-primary {
-            background: #2e7d32;
-            border: none;
-            padding: 14px 18px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 16px;
-            color: white;
-            width: 100%;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #2e7d32;
-            padding: 10px 16px;
-            border-radius: 32px;
-            color: #4caf50;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .lang-switch {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-        .lang-btn {
-            background: #1e1e1e;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 40px;
-            color: #bbb;
-            cursor: pointer;
-        }
-        .lang-btn.active { background: #2e7d32; color: white; }
-        .food-grid { display: flex; flex-direction: column; gap: 16px; }
-        .food-item {
-            background: #101010;
-            border-radius: 24px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            padding: 12px;
-            border: 0.5px solid #2c2c2c;
-        }
-        .food-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
-            object-fit: cover;
-            background: #1f1f1f;
-        }
-        .food-info { flex: 1; }
-        .food-name { font-weight: 700; font-size: 17px; }
-        .food-price { color: #4caf50; font-weight: 600; margin-top: 4px; }
-        .add-btn {
-            background: #2e7d32;
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 30px;
-            font-size: 24px;
-            color: white;
-            cursor: pointer;
-        }
-        .category-filter {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-            padding-bottom: 4px;
-        }
-        .chip {
-            background: #1f1f1f;
-            padding: 8px 18px;
-            border-radius: 40px;
-            white-space: nowrap;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .chip.active { background: #2e7d32; color: white; }
-        .wheel-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 20px auto;
-        }
-        canvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-        }
-        .spin-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2e7d32;
-            border: none;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            font-weight: bold;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .qty-control { display: flex; gap: 12px; align-items: center; }
-        .qty-btn {
-            background: #2a2a2a;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 30px;
-            font-size: 18px;
-            color: white;
-            cursor: pointer;
-        }
-        input, select {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 16px;
-            padding: 14px;
-            color: white;
-            font-size: 16px;
-            width: 100%;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Crazy Taom | O‘zbek Milliy Baraban</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app"></div>
-<script>
-    const translations = {
-        uz: {
-            greeting: "Salom", balance: "Cashback", randomBtn: "🎡 Nima yeyishni bilmayapsiz?",
-            categories: ["Barchasi", "Osh", "Fast food", "Ichimliklar"],
-            orderBtn: "Buyurtma berish", spinAgain: "Yana aylantirish", cartTitle: "Savat",
-            total: "Jami", cashbackInfo: "Cashback (5%)", finalPrice: "Yakuniy",
-            payment: "To‘lovga o‘tish", paymentOptions: "To‘lov usuli", confirmPay: "To‘lovni tasdiqlash",
-            successMsg: "To‘lov muvaffaqiyatli! +5% cashback qo‘shildi",
-            ordersTitle: "Buyurtmalar tarixi", profileTitle: "Profil", nameLabel: "Ism", phoneLabel: "Telefon", cashbackLabel: "Cashback"
-        },
-        ru: {
-            greeting: "Здравствуйте", balance: "Кешбэк", randomBtn: "🎡 Не знаете, что поесть?",
-            categories: ["Все", "Плов", "Фастфуд", "Напитки"],
-            orderBtn: "Заказать", spinAgain: "Крутить снова", cartTitle: "Корзина",
-            total: "Итого", cashbackInfo: "Кешбэк (5%)", finalPrice: "Итог",
-            payment: "К оплате", paymentOptions: "Способ оплаты", confirmPay: "Подтвердить",
-            successMsg: "Оплата успешна! +5% кешбэк",
-            ordersTitle: "История заказов", profileTitle: "Профиль", nameLabel: "Имя", phoneLabel: "Телефон", cashbackLabel: "Кешбэк"
-        }
-    };
-    let lang = "uz";
-    let currentUser = null;
-    let cart = [];
-    let orders = [];
-    let cashbackBalance = 0;
-    const FOODS = [
-        { id: "lagman", name_uz: "Lagman", name_ru: "Лагман", price: 28000, category: "Osh", image: "https://picsum.photos/id/127/100/100", desc_uz: "Mazali lagman", desc_ru: "Вкусный лагман" },
-        { id: "osh", name_uz: "Palov", name_ru: "Плов", price: 32000, category: "Osh", image: "https://picsum.photos/id/128/100/100", desc_uz: "An'anaviy palov", desc_ru: "Традиционный плов" },
-        { id: "burger", name_uz: "Burger", name_ru: "Бургер", price: 25000, category: "Fast food", image: "https://picsum.photos/id/129/100/100", desc_uz: "Double patty", desc_ru: "Двойная котлета" },
-        { id: "pizza", name_uz: "Pizza", name_ru: "Пицца", price: 45000, category: "Fast food", image: "https://picsum.photos/id/130/100/100", desc_uz: "Pepperoni", desc_ru: "Пепперони" },
-        { id: "somsa", name_uz: "Somsa", name_ru: "Самса", price: 8000, category: "Fast food", image: "https://picsum.photos/id/131/100/100", desc_uz: "Tandir somsa", desc_ru: "Тандыр самса" },
-        { id: "coca", name_uz: "Coca-Cola", name_ru: "Кока-Кола", price: 7000, category: "Ichimliklar", image: "https://picsum.photos/id/132/100/100", desc_uz: "Sovuq ichimlik", desc_ru: "Холодный напиток" },
-        { id: "ayran", name_uz: "Ayran", name_ru: "Айран", price: 5000, category: "Ichimliklar", image: "https://picsum.photos/id/133/100/100", desc_uz: "Tabiiy", desc_ru: "Натуральный" }
-    ];
-    function t(key) { return translations[lang][key] || key; }
-    function getFoodName(f) { return lang === "uz" ? f.name_uz : f.name_ru; }
-    function validatePhone(phone) {
-        let cleaned = phone.replace(/\s/g, '');
-        let regex = /^\+998[0-9]{9}$/;
-        return regex.test(cleaned);
-    }
-    function saveData() {
-        if(currentUser) localStorage.setItem("cafe_user", JSON.stringify({ name: currentUser.name, phone: currentUser.phone, cashback: cashbackBalance, orders }));
-        localStorage.setItem("cafe_cart", JSON.stringify(cart));
-        localStorage.setItem("cafe_lang", lang);
-    }
-    function loadData() {
-        let u = localStorage.getItem("cafe_user");
-        if(u) { let d = JSON.parse(u); currentUser = { name: d.name, phone: d.phone }; cashbackBalance = d.cashback || 0; orders = d.orders || []; }
-        let c = localStorage.getItem("cafe_cart");
-        if(c) cart = JSON.parse(c);
-        let l = localStorage.getItem("cafe_lang");
-        if(l === "ru" || l === "uz") lang = l;
-    }
-    function addToCart(food) {
-        let existing = cart.find(i => i.id === food.id);
-        if(existing) existing.quantity++;
-        else cart.push({ ...food, quantity: 1 });
-        saveData();
-        renderCurrentScreen();
-    }
-    function getTotalCart() { return cart.reduce((s,i) => s + i.price * i.quantity, 0); }
-    function setScreen(id) {
-        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-        let scr = document.getElementById(id);
-        if(scr) scr.classList.add('active');
-    }
-    function renderCurrentScreen() {
-        let active = document.querySelector('.screen.active')?.id;
-        if(active === 'homeScreen') renderHome();
-        else if(active === 'cartScreen') renderCart();
-        else if(active === 'spinScreen') renderSpin();
-        else if(active === 'ordersScreen') renderOrders();
-        else if(active === 'profileScreen') renderProfile();
-        else if(active === 'paymentScreen') renderPayment();
-    }
-    function renderHome() {
-        document.getElementById('greetingMsg').innerHTML = `${t('greeting')}, ${currentUser.name}!`;
-        document.getElementById('balanceVal').innerHTML = cashbackBalance;
-        let cats = t('categories');
-        let activeCat = window.currentCat || "Barchasi";
-        let chips = cats.map(c => `<div class="chip ${activeCat===c?'active':''}" data-cat="${c}">${c}</div>`).join('');
-        document.getElementById('categoryChips').innerHTML = chips;
-        let filtered = FOODS;
-        if(activeCat === "Osh") filtered = FOODS.filter(f => f.category === "Osh");
-        else if(activeCat === "Fast food") filtered = FOODS.filter(f => f.category === "Fast food");
-        else if(activeCat === "Ichimliklar") filtered = FOODS.filter(f => f.category === "Ichimliklar");
-        let foodsHtml = filtered.map(f => `
-            <div class="food-item">
-                <img class="food-img" src="${f.image}">
-                <div class="food-info">
-                    <div class="food-name">${getFoodName(f)}</div>
-                    <div class="food-price">${f.price} so'm</div>
-                </div>
-                <button class="add-btn" data-id="${f.id}">+</button>
-            </div>
-        `).join('');
-        document.getElementById('foodList').innerHTML = foodsHtml;
-        document.querySelectorAll('.add-btn').forEach(btn => {
-            let food = FOODS.find(f => f.id === btn.dataset.id);
-            btn.onclick = () => { addToCart(food); renderHome(); };
-        });
-        document.querySelectorAll('.chip').forEach(ch => {
-            ch.onclick = () => { window.currentCat = ch.innerText; renderHome(); };
-        });
-        document.getElementById('randomSpinBtnHome').innerHTML = t('randomBtn');
-        document.getElementById('randomSpinBtnHome').onclick = () => { setScreen('spinScreen'); renderSpin(); };
-    }
-    function renderCart() {
-        let container = document.getElementById('cart-list');
-        if(!cart.length) { container.innerHTML = "<div class='card'>Savat bo'sh</div>"; document.getElementById('cart-total').innerText = "0"; document.getElementById('cart-final').innerText = "0"; return; }
-        let html = cart.map((item, idx) => `
-            <div class="cart-item">
-                <div><b>${getFoodName(item)}</b><br/>${item.price} so'm</div>
-                <div class="qty-control">
-                    <button class="qty-btn" data-idx="${idx}" data-delta="-1">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-btn" data-idx="${idx}" data-delta="1">+</button>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">
+                <span class="neon-text">🍖 CRAZY TAOM 🥘</span>
+            </h1>
+            <p class="subtitle">O‘zbek Milliy Kazinosi</p>
+        </div>
+
+        <div class="wheel-container">
+            <div class="led-border"></div>
+            <div class="pointer-container">
+                <div class="pointer">
+                    <div class="pointer-triangle"></div>
+                    <div class="pointer-base"></div>
                 </div>
             </div>
-        `).join('');
-        container.innerHTML = html;
-        let total = getTotalCart();
-        document.getElementById('cart-total').innerText = total;
-        document.getElementById('cart-cashback').innerText = Math.floor(total * 0.05);
-        document.getElementById('cart-final').innerText = total;
-        document.querySelectorAll('.qty-btn').forEach(btn => {
-            btn.onclick = () => {
-                let idx = parseInt(btn.dataset.idx);
-                let delta = parseInt(btn.dataset.delta);
-                if(cart[idx]) {
-                    cart[idx].quantity += delta;
-                    if(cart[idx].quantity <= 0) cart.splice(idx,1);
-                    saveData();
-                    renderCart();
-                }
-            };
-        });
-        document.getElementById('paymentNavBtn').onclick = () => { renderPayment(); setScreen('paymentScreen'); };
-    }
-    function renderSpin() {
-        let canvas = document.getElementById('wheelCanvas');
-        if(!canvas) return;
-        let ctx = canvas.getContext('2d');
-        let size = 280;
-        canvas.width = size; canvas.height = size;
-        let items = FOODS.slice(0,5);
-        let angle = (Math.PI * 2) / items.length;
-        let start = 0;
-        for(let i=0; i<items.length; i++) {
-            ctx.beginPath();
-            ctx.fillStyle = i%2===0 ? '#1b3b1f' : '#2e7d32';
-            ctx.moveTo(size/2, size/2);
-            ctx.arc(size/2, size/2, size/2, start, start+angle);
-            ctx.fill();
-            ctx.save();
-            ctx.translate(size/2, size/2);
-            ctx.rotate(start + angle/2);
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 12px Inter';
-            ctx.fillText(getFoodName(items[i]).slice(0,6), 60, 8);
-            ctx.restore();
-            start += angle;
-        }
-        document.getElementById('spinBtn').disabled = false;
-        document.getElementById('spinBtn').onclick = () => {
-            let randomIdx = Math.floor(Math.random() * items.length);
-            let result = items[randomIdx];
-            document.getElementById('resultImg').src = result.image;
-            document.getElementById('resultName').innerHTML = getFoodName(result);
-            document.getElementById('resultPrice').innerHTML = result.price + " so'm";
-            document.getElementById('resultDesc').innerHTML = lang==='uz' ? result.desc_uz : result.desc_ru;
-            setScreen('resultScreen');
-            document.getElementById('orderFromResult').onclick = () => { addToCart(result); setScreen('homeScreen'); renderHome(); };
-            document.getElementById('spinAgainBtn').onclick = () => { setScreen('spinScreen'); renderSpin(); };
-        };
-    }
-    function renderPayment() {
-        let total = getTotalCart();
-        document.getElementById('payTotalAmount').innerText = total;
-        document.getElementById('confirmPayBtn').onclick = () => {
-            if(cart.length===0) return;
-            let earned = Math.floor(total * 0.05);
-            cashbackBalance += earned;
-            let newOrder = { id: Date.now(), items: [...cart], total: total, date: new Date().toLocaleString(), status: "Qabul qilindi" };
-            orders.unshift(newOrder);
-            cart = [];
-            saveData();
-            document.getElementById('successMsg').innerHTML = t('successMsg');
-            document.getElementById('cashbackAdded').innerHTML = `+${earned} cashback`;
-            setScreen('successScreen');
-        };
-    }
-    function renderOrders() {
-        let container = document.getElementById('ordersList');
-        if(!orders.length) { container.innerHTML = "<div class='card'>Buyurtmalar yo'q</div>"; return; }
-        container.innerHTML = orders.map(o => `<div class='card'><b>#${o.id}</b> - ${o.date}<br/>Jami: ${o.total} so'm<br/>Status: ${o.status}</div>`).join('');
-    }
-    function renderProfile() {
-        document.getElementById('profileName').innerHTML = currentUser.name;
-        document.getElementById('profilePhone').innerHTML = currentUser.phone;
-        document.getElementById('profileCashback').innerHTML = cashbackBalance;
-    }
-    function initApp() {
-        loadData();
-        if(currentUser) {
-            document.getElementById('authScreen').classList.remove('active');
-            renderHome(); renderCart(); renderOrders(); renderProfile();
-            setScreen('homeScreen');
-        } else {
-            setScreen('authScreen');
-            document.getElementById('authSubmitBtn').onclick = () => {
-                let name = document.getElementById('userName').value.trim();
-                let phone = document.getElementById('userPhone').value.trim();
-                if(!name || !validatePhone(phone)) { alert("Ism va to'g'ri telefon (+998XXXXXXXXX) kiriting!"); return; }
-                currentUser = { name, phone };
-                cashbackBalance = 0; cart = []; orders = [];
-                saveData();
-                initApp();
-            };
-        }
-    }
-    document.getElementById('app').innerHTML = `
-        <div class="lang-switch"><button class="lang-btn ${lang==='uz'?'active':''}" data-lang="uz">UZ</button><button class="lang-btn ${lang==='ru'?'active':''}" data-lang="ru">RU</button></div>
-        <div id="authScreen" class="screen"><div class="card"><h2>🍽️ SmartMenu</h2><input type="text" id="userName" placeholder="Ismingiz"><input type="tel" id="userPhone" placeholder="+998915003434" style="margin-top:12px"><button id="authSubmitBtn" class="btn-primary" style="margin-top:20px">Kirish</button></div></div>
-        <div id="homeScreen" class="screen"><div class="card"><div id="greetingMsg"></div><div>💰 <span id="balanceVal"></span> so'm</div><button id="randomSpinBtnHome" class="btn-outline" style="margin-top:12px"></button></div><div id="categoryChips" class="category-filter"></div><div id="foodList" class="food-grid"></div></div>
-        <div id="cartScreen" class="screen"><h2>🛒 ${t('cartTitle')}</h2><div id="cart-list"></div><div class="card">${t('total')}: <span id="cart-total">0</span> so'm<br/>${t('cashbackInfo')}: <span id="cart-cashback">0</span><br/><strong>${t('finalPrice')}: <span id="cart-final">0</span> so'm</strong><br/><button id="paymentNavBtn" class="btn-primary" style="margin-top:14px">${t('payment')}</button></div></div>
-        <div id="spinScreen" class="screen"><h2>🎡 Roulette</h2><div class="wheel-container"><canvas id="wheelCanvas" width="280" height="280"></canvas><button id="spinBtn" class="spin-btn">Ayla</button></div></div>
-        <div id="resultScreen" class="screen"><div class="card"><img id="resultImg" width="120" style="border-radius:32px"><h2 id="resultName"></h2><h3 id="resultPrice"></h3><p id="resultDesc"></p><button id="orderFromResult" class="btn-primary">${t('orderBtn')}</button><button id="spinAgainBtn" class="btn-outline" style="margin-top:12px">${t('spinAgain')}</button></div></div>
-        <div id="paymentScreen" class="screen"><h2>💳 ${t('paymentOptions')}</h2><div class="card"><p>Click | Payme | Uzcard | Naqd</p><div>Jami: <span id="payTotalAmount"></span> so'm</div><button id="confirmPayBtn" class="btn-primary">${t('confirmPay')}</button></div></div>
-        <div id="successScreen" class="screen"><div class="card"><h2>✅ ${t('successMsg')}</h2><p id="cashbackAdded"></p><button onclick="location.reload()" class="btn-primary">Yangi buyurtma</button></div></div>
-        <div id="ordersScreen" class="screen"><h2>📋 ${t('ordersTitle')}</h2><div id="ordersList"></div></div>
-        <div id="profileScreen" class="screen"><div class="card"><h3>👤 ${t('profileTitle')}</h3><p>${t('nameLabel')}: <span id="profileName"></span></p><p>${t('phoneLabel')}: <span id="profilePhone"></span></p><p>💰 ${t('cashbackLabel')}: <span id="profileCashback"></span> so'm</p></div></div>
-        <div class="bottom-nav"><button class="nav-item" id="homeNav">🏠 Bosh</button><button class="nav-item" id="cartNav">🛒 Savat</button><button class="nav-item" id="spinNav">🎡 Aylantir</button><button class="nav-item" id="ordersNav">📋 Buyurtma</button><button class="nav-item" id="profileNav">👤 Profil</button></div>
-    `;
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.onclick = () => { lang = btn.dataset.lang; localStorage.setItem('cafe_lang', lang); initApp(); };
-    });
-    document.getElementById('homeNav').onclick = () => { renderHome(); setScreen('homeScreen'); };
-    document.getElementById('cartNav').onclick = () => { renderCart(); setScreen('cartScreen'); };
-    document.getElementById('spinNav').onclick = () => { renderSpin(); setScreen('spinScreen'); };
-    document.getElementById('ordersNav').onclick = () => { renderOrders(); setScreen('ordersScreen'); };
-    document.getElementById('profileNav').onclick = () => { renderProfile(); setScreen('profileScreen'); };
-    initApp();
-</script>
+            <canvas id="wheelCanvas" width="800" height="800"></canvas>
+            <div class="center-decor">
+                <div class="golden-spinner"></div>
+                <div class="center-glow"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="spinBtn" class="spin-button">
+                <span class="button-text">🔄 SPIN 🔄</span>
+                <span class="button-glow"></span>
+            </button>
+        </div>
+
+        <div id="resultModal" class="result-modal glassmorphism">
+            <div class="result-content">
+                <h2>🎉 TUSHGAN TAOM 🎉</h2>
+                <div id="resultName" class="result-name"></div>
+                <div class="result-decoration">✦ ✦ ✦</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="spinSound" preload="auto">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="auto">
+        <source src="https://www.soundjay.com/misc/sounds/fanfare-6.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="app.js"></script>
 </body>
-</html>
+</html> 
