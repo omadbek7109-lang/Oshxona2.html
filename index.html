@@ -2,57 +2,76 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Crazy Taom | O‘zbek Milliy Baraban</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Crazy Taom Premium | O‘zbek Milliy Kazinosi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="particles" id="particles"></div>
+    <div class="animated-bg"></div>
+    <div id="particles-container"></div>
+    <div class="glow-overlay"></div>
     
     <div class="container">
         <div class="header">
             <h1 class="title">
-                <span class="neon-text">🍖 CRAZY TAOM 🥘</span>
+                <span class="neon-text-gold">⚡ CRAZY TAOM ⚡</span>
             </h1>
-            <p class="subtitle">O‘zbek Milliy Kazinosi</p>
+            <div class="premium-divider"></div>
+            <p class="subtitle">PREMIUM UZBEK CASINO</p>
         </div>
 
-        <div class="wheel-container">
-            <div class="led-border"></div>
-            <div class="pointer-container">
-                <div class="pointer">
-                    <div class="pointer-triangle"></div>
-                    <div class="pointer-base"></div>
-                </div>
+        <div class="wheel-wrapper">
+            <div class="led-ring">
+                <div class="led led-1"></div><div class="led led-2"></div><div class="led led-3"></div>
+                <div class="led led-4"></div><div class="led led-5"></div><div class="led led-6"></div>
+                <div class="led led-7"></div><div class="led led-8"></div><div class="led led-9"></div>
+                <div class="led led-10"></div><div class="led led-11"></div><div class="led led-12"></div>
             </div>
+            
+            <div class="pointer-premium">
+                <div class="pointer-body"></div>
+                <div class="pointer-gem"></div>
+                <div class="pointer-glow"></div>
+            </div>
+            
             <canvas id="wheelCanvas" width="800" height="800"></canvas>
-            <div class="center-decor">
-                <div class="golden-spinner"></div>
-                <div class="center-glow"></div>
+            
+            <div class="center-premium">
+                <div class="center-ring"></div>
+                <div class="center-star"></div>
+                <div class="center-spinner"></div>
             </div>
         </div>
 
         <div class="controls">
-            <button id="spinBtn" class="spin-button">
-                <span class="button-text">🔄 SPIN 🔄</span>
-                <span class="button-glow"></span>
+            <button id="spinBtn" class="spin-button-premium">
+                <span class="spin-text">🎰 SPIN & WIN 🎰</span>
+                <span class="spin-pulse"></span>
             </button>
-        </div>
-
-        <div id="resultModal" class="result-modal glassmorphism">
-            <div class="result-content">
-                <h2>🎉 TUSHGAN TAOM 🎉</h2>
-                <div id="resultName" class="result-name"></div>
-                <div class="result-decoration">✦ ✦ ✦</div>
-            </div>
         </div>
     </div>
 
+    <div id="fullscreenPopup" class="fullscreen-popup">
+        <div class="popup-content">
+            <div class="popup-glow"></div>
+            <div class="popup-decoration">✦ ✦ ✦</div>
+            <div class="popup-label">🎉 TUSHGAN TAOM 🎉</div>
+            <div id="popupFoodName" class="popup-food-name"></div>
+            <div class="popup-subtitle">PREMIUM WINNER!</div>
+            <button id="closePopupBtn" class="popup-close">✦ CONTINUE ✦</button>
+        </div>
+    </div>
+
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
     <audio id="spinSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds/casino-chips-01.mp3" type="audio/mpeg">
     </audio>
     <audio id="winSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/fanfare-6.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds/jackpot-winning-01.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="tickSound" preload="auto">
+        <source src="https://www.soundjay.com/misc/sounds/click-01.mp3" type="audio/mpeg">
     </audio>
 
     <script src="app.js"></script>
