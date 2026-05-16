@@ -1,79 +1,110 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Crazy Taom Premium | O‘zbek Milliy Kazinosi</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <title>Nima yeymiz? – Premium Food Delivery</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="animated-bg"></div>
-    <div id="particles-container"></div>
-    <div class="glow-overlay"></div>
-    
-    <div class="container">
-        <div class="header">
-            <h1 class="title">
-                <span class="neon-text-gold">⚡ CRAZY TAOM ⚡</span>
-            </h1>
-            <div class="premium-divider"></div>
-            <p class="subtitle">PREMIUM UZBEK CASINO</p>
-        </div>
 
-        <div class="wheel-wrapper">
-            <div class="led-ring">
-                <div class="led led-1"></div><div class="led led-2"></div><div class="led led-3"></div>
-                <div class="led led-4"></div><div class="led led-5"></div><div class="led led-6"></div>
-                <div class="led led-7"></div><div class="led led-8"></div><div class="led led-9"></div>
-                <div class="led led-10"></div><div class="led led-11"></div><div class="led led-12"></div>
-            </div>
-            
-            <div class="pointer-premium">
-                <div class="pointer-body"></div>
-                <div class="pointer-gem"></div>
-                <div class="pointer-glow"></div>
-            </div>
-            
-            <canvas id="wheelCanvas" width="800" height="800"></canvas>
-            
-            <div class="center-premium">
-                <div class="center-ring"></div>
-                <div class="center-star"></div>
-                <div class="center-spinner"></div>
-            </div>
-        </div>
+  <!-- SPLASH SCREEN -->
+  <div id="splash" class="splash active">
+    <div class="splash-glow"></div>
+    <div class="floating-circle c1"></div>
+    <div class="floating-circle c2"></div>
+    <div class="floating-circle c3"></div>
+    <div class="splash-content">
+      <div class="logo-badge">🍜</div>
+      <h1 class="splash-title">Nima yeymiz?</h1>
+      <p class="splash-sub">Bugun nima yeymiz?</p>
+    </div>
+  </div>
 
-        <div class="controls">
-            <button id="spinBtn" class="spin-button-premium">
-                <span class="spin-text">🎰 SPIN & WIN 🎰</span>
-                <span class="spin-pulse"></span>
-            </button>
-        </div>
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-glass">
+      <div class="auth-icon">🍽️</div>
+      <h2>Salom!</h2>
+      <p>Davom etish uchun ma'lumotlaringizni kiriting</p>
+      <div class="input-group">
+        <input type="text" id="fullName" placeholder="Ism va familiya" autocomplete="off">
+        <label>To'liq ism</label>
+      </div>
+      <div class="input-group">
+        <input type="tel" id="phoneNumber" placeholder="+998 90 123 45 67">
+        <label>Telefon raqam</label>
+      </div>
+      <button id="authContinueBtn" class="premium-btn">Davom etish</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="appContainer" style="display: none;">
+    <!-- BOTTOM NAVIGATION (floating glass) -->
+    <div class="bottom-nav" id="bottomNav">
+      <div class="nav-item" data-tab="home"><i class="fas fa-home"></i><span>Home</span></div>
+      <div class="nav-item" data-tab="menu"><i class="fas fa-utensils"></i><span>Menu</span></div>
+      <div class="nav-item" data-tab="roulette"><i class="fas fa-dice"></i><span>Roulette</span></div>
+      <div class="nav-item" data-tab="rewards"><i class="fas fa-gem"></i><span>Rewards</span></div>
+      <div class="nav-item" data-tab="cart"><i class="fas fa-shopping-bag"></i><span>Cart</span></div>
+      <div class="nav-item" data-tab="profile"><i class="fas fa-user"></i><span>Profile</span></div>
     </div>
 
-    <div id="fullscreenPopup" class="fullscreen-popup">
-        <div class="popup-content">
-            <div class="popup-glow"></div>
-            <div class="popup-decoration">✦ ✦ ✦</div>
-            <div class="popup-label">🎉 TUSHGAN TAOM 🎉</div>
-            <div id="popupFoodName" class="popup-food-name"></div>
-            <div class="popup-subtitle">PREMIUM WINNER!</div>
-            <button id="closePopupBtn" class="popup-close">✦ CONTINUE ✦</button>
-        </div>
+    <!-- MAIN CONTENT PAGES -->
+    <div id="pageHome" class="page active-page">
+      <!-- Home content will be injected -->
     </div>
+    <div id="pageMenu" class="page"></div>
+    <div id="pageRoulette" class="page"></div>
+    <div id="pageRewards" class="page"></div>
+    <div id="pageCart" class="page"></div>
+    <div id="pageProfile" class="page"></div>
+    <div id="pageOrders" class="page" style="display:none;"></div> <!-- hidden orders page, accessible from profile -->
+  </div>
 
-    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+  <!-- MODAL for food details (bottom sheet) -->
+  <div id="foodModal" class="modal-bottom">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <img id="modalImg" src="" alt="">
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+      <p id="modalIngredients"></p>
+      <div class="quantity-selector">
+        <button id="decQty">-</button>
+        <span id="modalQty">1</span>
+        <button id="incQty">+</button>
+      </div>
+      <div id="modalPrice"></div>
+      <button id="addToCartModalBtn" class="premium-btn">Qo'shish</button>
+    </div>
+  </div>
 
-    <audio id="spinSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/casino-chips-01.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="winSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/jackpot-winning-01.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="tickSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/click-01.mp3" type="audio/mpeg">
-    </audio>
+  <!-- CART SIDESHEET -->
+  <div id="cartSheet" class="cart-sidebar">
+    <div class="cart-header"><h3>Savat <i class="fas fa-times close-cart"></i></h3></div>
+    <div id="cartItemsList"></div>
+    <div class="cart-footer">
+      <div>Jami: <span id="cartTotal">0</span> so'm</div>
+      <div>Cashback: <span id="cartCashback">0</span></div>
+      <div>Olmos: <span id="cartDiamonds">0</span></div>
+      <button id="checkoutBtn" class="premium-btn">Buyurtma berish</button>
+    </div>
+  </div>
 
-    <script src="app.js"></script>
+  <!-- ORDER DETAIL MODAL -->
+  <div id="orderDetailModal" class="modal-bottom">
+    <div class="modal-content">
+      <span class="close-order-modal">&times;</span>
+      <h3>Buyurtma tafsilotlari</h3>
+      <div id="orderDetailContent"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html> 
