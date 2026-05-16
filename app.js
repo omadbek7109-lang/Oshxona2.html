@@ -1,42 +1,38 @@
 const foods = [
-    "Osh", "Somsa", "Lag‘mon", "Manti", "Sho‘rva",
-    "Norin", "Chuchvara", "Dimlama", "Kabob", "Mastava",
-    "Shashlik", "Qozon Kabob", "Holvaytar", "Moshxo‘rda", "Xonim"
+    "OSH", "SOMSA", "LAG'MON", "MANTI", "SHO'RVA",
+    "NORIN", "CHUCHVARA", "DIMLAMA", "KABOB", "MASTAVA",
+    "SHASHLIK", "QOZON KABOB", "HOLVAYTAR", "MOSHXO'RDA", "XONIM"
 ];
 
 const colors = [
-    "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7",
-    "#DDA0DD", "#98D8C8", "#F7D794", "#F8A5C2", "#FF9671",
-    "#FFC75F", "#C9A2C3", "#85C1E2", "#F3A683", "#F7D794"
+    "#FF0000", "#FF4500", "#FF6600", "#FF8C00", "#FFA500",
+    "#FFB347", "#FFCC00", "#FFD700", "#FFE44D", "#00CED1",
+    "#20B2AA", "#3CB371", "#32CD32", "#9ACD32", "#6B8E23"
 ];
 
 let canvas = document.getElementById('wheelCanvas');
 let ctx = canvas.getContext('2d');
 let spinBtn = document.getElementById('spinBtn');
-let resultModal = document.getElementById('resultModal');
-let resultName = document.getElementById('resultName');
+let popup = document.getElementById('fullscreenPopup');
+let popupFoodName = document.getElementById('popupFoodName');
+let closePopupBtn = document.getElementById('closePopupBtn');
 
 let currentAngle = 0;
 let spinning = false;
 let spinSound = document.getElementById('spinSound');
 let winSound = document.getElementById('winSound');
+let tickSound = document.getElementById('tickSound');
 
 let animationId = null;
 let spinStartTime = 0;
-let spinDuration = 3000;
+let spinDuration = 3500;
 let spinStartAngle = 0;
 let spinTargetAngle = 0;
-let finalSector = 0;
+let tickInterval = null;
 
-// Audio initialization
-function initAudio() {
-    spinSound.load();
-    winSound.load();
-}
-
-// Setup canvas size
+// Setup canvas with proper size
 function setupCanvas() {
-    const size = Math.min(window.innerWidth * 0.85, window.innerHeight * 0.85, 600);
+    const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9, 700);
     canvas.width = size;
     canvas.height = size;
     canvas.style.width = `${size}px`;
@@ -44,7 +40,7 @@ function setupCanvas() {
     drawWheel();
 }
 
-// Draw wheel with all sectors
+// Draw 3D metallic gradient wheel
 function drawWheel() {
     const size = canvas.width;
     const centerX = size / 2;
@@ -53,83 +49,110 @@ function drawWheel() {
     const angleStep = (Math.PI * 2) / foods.length;
 
     ctx.clearRect(0, 0, size, size);
-
+    
+    // Draw outer metallic ring
+    ctx.save();
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "rgba(255, 215, 0, 0.5)";
+    
     for (let i = 0; i < foods.length; i++) {
         const startAngle = i * angleStep + currentAngle;
         const endAngle = startAngle + angleStep;
-
+        
+        // Create 3D metallic gradient
+        const gradient = ctx.createLinearGradient(
+            centerX + Math.cos(startAngle + angleStep/2) * radius * 0.5,
+            centerY + Math.sin(startAngle + angleStep/2) * radius * 0.5,
+            centerX + Math.cos(startAngle + angleStep/2) * radius * 0.9,
+            centerY + Math.sin(startAngle + angleStep/2) * radius * 0.9
+        );
+        gradient.addColorStop(0, colors[i % colors.length]);
+        gradient.addColorStop(0.5, `rgba(255, 255, 255, 0.4)`);
+        gradient.addColorStop(1, colors[i % colors.length]);
+        
         // Draw sector
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillStyle = gradient;
         ctx.fill();
         
-        // Draw border
-        ctx.strokeStyle = "#FFD700";
-        ctx.lineWidth = 3;
+        // Draw 3D border
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.strokeStyle = `rgba(255, 215, 0, 0.8)`;
+        ctx.lineWidth = 4;
         ctx.stroke();
         
-        // Draw text
+        // Draw inner metallic shine
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius * 0.85, startAngle, endAngle);
+        ctx.strokeStyle = `rgba(255, 255, 255, 0.3)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Draw text with proper rotation
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(startAngle + angleStep / 2);
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `bold ${Math.max(12, size / 25)}px "Segoe UI", "Poppins"`;
-        ctx.fillStyle = "#FFFFFF";
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = "rgba(0,0,0,0.5)";
-        ctx.fillText(foods[i], radius * 0.7, 0);
-        ctx.restore();
         
-        // Draw inner glow
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius * 0.95, startAngle, endAngle);
-        ctx.strokeStyle = "rgba(255,215,0,0.3)";
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        const fontSize = Math.max(14, size / 22);
+        ctx.font = `900 ${fontSize}px "Poppins", "Segoe UI", Impact`;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "rgba(0,0,0,0.8)";
+        
+        // Add stroke to text for better readability
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.strokeText(foods[i], radius * 0.68, 0);
+        ctx.fillText(foods[i], radius * 0.68, 0);
+        ctx.restore();
     }
     
-    // Draw inner circle decoration
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius * 0.2, 0, Math.PI * 2);
-    ctx.fillStyle = "#FFD700";
-    ctx.fill();
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "rgba(255,215,0,0.8)";
-    
-    // Draw outer ring glow
+    // Draw 3D outer ring
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = "#FFD700";
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = "url(#metallicGradient)";
+    ctx.lineWidth = 8;
     ctx.stroke();
+    
+    // Draw metallic glow
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius + 5, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255, 215, 0, 0.5)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    
+    ctx.restore();
 }
 
-// Create confetti effect
-function createConfetti() {
-    const confettiCanvas = document.createElement('canvas');
-    confettiCanvas.id = 'confettiCanvas';
-    document.body.appendChild(confettiCanvas);
+// Advanced confetti system
+function createAdvancedConfetti() {
+    const confettiCanvas = document.getElementById('confettiCanvas');
     confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
+    let confCtx = confettiCanvas.getContext('2d');
     
     let particles = [];
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 200; i++) {
         particles.push({
             x: Math.random() * confettiCanvas.width,
             y: Math.random() * confettiCanvas.height - confettiCanvas.height,
-            size: Math.random() * 8 + 4,
-            speedY: Math.random() * 8 + 5,
-            speedX: (Math.random() - 0.5) * 4,
+            size: Math.random() * 10 + 5,
+            speedY: Math.random() * 10 + 6,
+            speedX: (Math.random() - 0.5) * 5,
             color: `hsl(${Math.random() * 60 + 30}, 100%, 60%)`,
             rotation: Math.random() * 360,
-            rotationSpeed: (Math.random() - 0.5) * 10
+            rotationSpeed: (Math.random() - 0.5) * 15,
+            shape: Math.random() > 0.5 ? 'rect' : 'circle'
         });
     }
     
-    let confCtx = confettiCanvas.getContext('2d');
     let confettiId = null;
     
     function animateConfetti() {
@@ -147,7 +170,16 @@ function createConfetti() {
                 confCtx.translate(p.x, p.y);
                 confCtx.rotate(p.rotation * Math.PI / 180);
                 confCtx.fillStyle = p.color;
-                confCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                confCtx.shadowBlur = 10;
+                confCtx.shadowColor = "gold";
+                
+                if (p.shape === 'rect') {
+                    confCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                } else {
+                    confCtx.beginPath();
+                    confCtx.arc(0, 0, p.size/2, 0, Math.PI * 2);
+                    confCtx.fill();
+                }
                 confCtx.restore();
             }
         }
@@ -156,52 +188,63 @@ function createConfetti() {
             confettiId = requestAnimationFrame(animateConfetti);
         } else {
             cancelAnimationFrame(confettiId);
-            confettiCanvas.remove();
+            confCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
         }
     }
     
     animateConfetti();
     
     setTimeout(() => {
-        if (confettiId) {
-            cancelAnimationFrame(confettiId);
-            confettiCanvas.remove();
-        }
+        if (confettiId) cancelAnimationFrame(confettiId);
     }, 4000);
 }
 
-// Show result with animation
-function showResult(food) {
-    resultName.textContent = food;
-    resultModal.classList.add('show');
-    createConfetti();
+// Show fullscreen popup
+function showPremiumPopup(food) {
+    popupFoodName.textContent = food;
+    popup.classList.add('show');
+    createAdvancedConfetti();
     
     // Mobile vibration
     if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(200);
+        window.navigator.vibrate([200, 100, 200]);
     }
-    
-    setTimeout(() => {
-        resultModal.classList.remove('show');
-    }, 3000);
 }
 
-// Calculate which sector is selected
+// Get current sector
 function getCurrentSector() {
     const angleStep = (Math.PI * 2) / foods.length;
-    let pointerAngle = (Math.PI * 3) / 2; // 270 degrees - top pointer
+    let pointerAngle = (Math.PI * 3) / 2;
     let rawAngle = (pointerAngle - currentAngle + Math.PI * 4) % (Math.PI * 2);
     let sectorIndex = Math.floor(rawAngle / angleStep);
     return sectorIndex % foods.length;
 }
 
-// Spin animation with physics
+// Play tick sound during spin
+function startTickSound() {
+    if (tickInterval) clearInterval(tickInterval);
+    tickInterval = setInterval(() => {
+        if (spinning) {
+            tickSound.currentTime = 0;
+            tickSound.play().catch(e => {});
+        }
+    }, 200);
+}
+
+function stopTickSound() {
+    if (tickInterval) {
+        clearInterval(tickInterval);
+        tickInterval = null;
+    }
+}
+
+// Spin animation with advanced physics
 function animateSpin(timestamp) {
     const elapsed = timestamp - spinStartTime;
     let t = Math.min(1, elapsed / spinDuration);
     
-    // Ease out cubic
-    const easeOut = 1 - Math.pow(1 - t, 3);
+    // Advanced ease-out-cubic for smooth stopping
+    const easeOut = 1 - Math.pow(1 - t, 4);
     
     const currentSpinAngle = spinStartAngle + (spinTargetAngle - spinStartAngle) * easeOut;
     currentAngle = currentSpinAngle % (Math.PI * 2);
@@ -213,107 +256,108 @@ function animateSpin(timestamp) {
     } else {
         // Spin complete
         spinning = false;
+        stopTickSound();
+        
         const finalSector = getCurrentSector();
         const winningFood = foods[finalSector];
         
         // Play win sound
         winSound.currentTime = 0;
-        winSound.play().catch(e => console.log('Audio play failed:', e));
-        
-        // Stop spin sound
+        winSound.play().catch(e => console.log('Audio:', e));
         spinSound.pause();
         spinSound.currentTime = 0;
         
         // Show result
-        showResult(winningFood);
+        showPremiumPopup(winningFood);
         
-        // Additional glow effect on wheel
-        canvas.style.filter = 'drop-shadow(0 0 30px gold)';
+        // Add massive glow effect
+        canvas.style.filter = 'drop-shadow(0 0 50px gold) drop-shadow(0 0 80px #ff6600)';
         setTimeout(() => {
             canvas.style.filter = '';
-        }, 500);
+        }, 800);
         
         animationId = null;
     }
 }
 
-// Spin the wheel
+// Spin wheel
 function spinWheel() {
     if (spinning) return;
-    
-    // Initialize audio on user interaction
-    initAudio();
     
     spinning = true;
     spinStartTime = performance.now();
     spinStartAngle = currentAngle;
     
-    // Random total spin (5-15 full rotations) + random final offset
-    const fullRotations = Math.floor(Math.random() * 15 + 10);
+    // Random spins with physics
+    const fullRotations = Math.floor(Math.random() * 20 + 12);
     const randomOffset = Math.random() * Math.PI * 2;
     spinTargetAngle = spinStartAngle + (fullRotations * Math.PI * 2) + randomOffset;
     
-    // Play spin sound
+    // Play sounds
     spinSound.currentTime = 0;
-    spinSound.play().catch(e => console.log('Audio play failed:', e));
+    spinSound.play().catch(e => console.log('Audio:', e));
+    startTickSound();
     
-    // Add pulse animation to button
+    // Button pulse animation
     spinBtn.style.transform = 'scale(0.95)';
     setTimeout(() => {
         spinBtn.style.transform = '';
-    }, 100);
+    }, 150);
     
-    // Mobile vibration on spin
+    // Mobile vibration
     if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(100);
     }
     
-    // Start animation
+    // Cancel previous animation
     if (animationId) cancelAnimationFrame(animationId);
     animationId = requestAnimationFrame(animateSpin);
 }
 
-// Create particle background
-function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    for (let i = 0; i < 50; i++) {
+// Create premium particles
+function createPremiumParticles() {
+    const container = document.getElementById('particles-container');
+    for (let i = 0; i < 100; i++) {
         const particle = document.createElement('div');
-        particle.classList.add('particle');
+        particle.classList.add('particle-premium');
         particle.style.left = Math.random() * 100 + '%';
-        particle.style.width = Math.random() * 5 + 2 + 'px';
+        particle.style.width = Math.random() * 6 + 2 + 'px';
         particle.style.height = particle.style.width;
-        particle.style.animationDuration = Math.random() * 10 + 5 + 's';
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        particlesContainer.appendChild(particle);
+        particle.style.animationDuration = Math.random() * 15 + 8 + 's';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        container.appendChild(particle);
     }
 }
 
-// Handle window resize
+// Handle resize
 function handleResize() {
     setupCanvas();
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    if (confettiCanvas) {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+    }
 }
 
-// Add glow effect on hover for wheel
-function addGlowEffects() {
-    canvas.addEventListener('mouseenter', () => {
-        canvas.style.filter = 'drop-shadow(0 0 20px rgba(255,215,0,0.6))';
-    });
-    canvas.addEventListener('mouseleave', () => {
-        canvas.style.filter = '';
-    });
-}
+// Close popup
+closePopupBtn.addEventListener('click', () => {
+    popup.classList.remove('show');
+});
 
-// Initialize everything
+// Initialize all
 function init() {
-    createParticles();
+    createPremiumParticles();
     setupCanvas();
-    addGlowEffects();
     spinBtn.addEventListener('click', spinWheel);
     window.addEventListener('resize', handleResize);
     
-    // Draw initial wheel
+    // Preload audio
+    spinSound.load();
+    winSound.load();
+    tickSound.load();
+    
     drawWheel();
 }
 
-// Start the app
-init();
+// Start app
+init(); 
